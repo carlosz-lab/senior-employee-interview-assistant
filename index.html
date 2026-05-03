@@ -44,64 +44,80 @@ html,body{height:100%;overflow:hidden}
 body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
 
 /* ── Layout ── */
-.layout{display:grid;grid-template-columns:220px 1fr;height:100vh;overflow:hidden}
+.layout{display:grid;grid-template-columns:220px 1fr;height:100vh;overflow:hidden;transition:grid-template-columns .25s ease}
+.layout.collapsed{grid-template-columns:0px 1fr}
 
 /* ── Sidebar ── */
 .sidebar{
-  background:var(--sidebar);color:var(--sidebar-text);
+  background:#f8fafc;color:#1e293b;
   display:flex;flex-direction:column;overflow:hidden;
-  border-right:1px solid rgba(255,255,255,.07);
+  border-right:1px solid #e2e8f0;
+  position:relative;transition:all .25s ease;
 }
-.sidebar-brand{
-  padding:18px 16px 14px;
-  border-bottom:1px solid rgba(255,255,255,.07);
-}
-.brand-name{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#fff;margin-bottom:2px}
-.brand-sub{font-size:11px;color:var(--sidebar-sub)}
+.layout.collapsed .sidebar{overflow:hidden;min-width:0}
 
-.sidebar-section{padding:12px 10px 4px;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--sidebar-sub)}
+/* ── Sidebar toggle button ── */
+.sidebar-toggle{
+  position:fixed;left:220px;top:50%;transform:translateY(-50%);
+  width:18px;height:44px;border-radius:0 6px 6px 0;
+  background:#e2e8f0;border:1px solid #cbd5e1;border-left:none;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  color:#64748b;font-size:10px;z-index:100;
+  transition:left .25s ease,background .15s;box-shadow:2px 0 6px rgba(0,0,0,.08);
+}
+.sidebar-toggle:hover{background:#cbd5e1;color:#334155}
+.layout.collapsed .sidebar-toggle{left:0px}
+
+.sidebar-brand{
+  padding:16px 14px 12px;
+  border-bottom:1px solid #e2e8f0;
+}
+.brand-name{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#1e293b;margin-bottom:2px}
+.brand-sub{font-size:11px;color:#64748b}
+
+.sidebar-section{padding:12px 10px 4px;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#94a3b8}
 
 .nav-item{
   display:flex;align-items:center;gap:8px;
   padding:8px 12px;border-radius:6px;margin:1px 6px;
-  cursor:pointer;font-size:13px;color:var(--sidebar-sub);
+  cursor:pointer;font-size:13px;color:#64748b;
   transition:all .15s;border:none;background:transparent;
   text-align:left;width:calc(100% - 12px);
 }
-.nav-item:hover{background:rgba(255,255,255,.06);color:var(--sidebar-text)}
-.nav-item.active{background:var(--sidebar-active-bg);color:#60a5fa;font-weight:600}
+.nav-item:hover{background:#f1f5f9;color:#1e293b}
+.nav-item.active{background:#eff6ff;color:#2563eb;font-weight:600}
 .nav-item .dot{
   width:7px;height:7px;border-radius:50%;flex-shrink:0;
-  background:rgba(255,255,255,.2);
+  background:#cbd5e1;
 }
 .nav-item .dot.done{background:var(--ok)}
 .nav-item .dot.partial{background:var(--accent-m)}
 
-.group-section{padding:12px 10px 6px;border-top:1px solid rgba(255,255,255,.07);margin-top:auto}
-.group-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--sidebar-sub);margin-bottom:6px}
+.group-section{padding:12px 10px 6px;border-top:1px solid #e2e8f0;margin-top:auto}
+.group-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#94a3b8;margin-bottom:6px}
 .group-list{display:flex;flex-direction:column;gap:2px;max-height:180px;overflow-y:auto}
 .group-list::-webkit-scrollbar{width:3px}
 .group-list::-webkit-scrollbar-track{background:transparent}
-.group-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:2px}
+.group-list::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:2px}
 .group-btn{
   display:flex;align-items:center;justify-content:space-between;
   padding:6px 10px;border-radius:5px;cursor:pointer;
-  font-size:12px;color:var(--sidebar-sub);
+  font-size:12px;color:#64748b;
   background:transparent;border:none;text-align:left;transition:all .12s;
 }
-.group-btn:hover{background:rgba(255,255,255,.05);color:var(--sidebar-text)}
-.group-btn.active{background:rgba(255,255,255,.08);color:#fff;font-weight:600}
+.group-btn:hover{background:#f1f5f9;color:#1e293b}
+.group-btn.active{background:#eff6ff;color:#2563eb;font-weight:600}
 .group-dots{display:flex;gap:3px}
-.group-dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.15)}
+.group-dot{width:5px;height:5px;border-radius:50%;background:#cbd5e1}
 .group-dot.e{background:#60a5fa}
 .group-dot.m{background:#fbbf24}
 .add-group-btn{
   margin-top:6px;width:100%;padding:7px;border-radius:5px;
-  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
-  color:var(--sidebar-sub);font-size:12px;cursor:pointer;
+  background:#f1f5f9;border:1px solid #e2e8f0;
+  color:#64748b;font-size:12px;cursor:pointer;
   font-family:var(--sans);transition:all .12s;
 }
-.add-group-btn:hover{background:rgba(255,255,255,.1);color:var(--sidebar-text)}
+.add-group-btn:hover{background:#e2e8f0;color:#1e293b}
 
 /* ── Main content ── */
 .main{display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
@@ -501,54 +517,77 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 
 /* ── Data mgmt section in sidebar ── */
 .data-section{
-  padding:10px 8px;border-top:1px solid rgba(255,255,255,.07);
+  padding:10px 8px;border-top:1px solid #e2e8f0;
 }
 .data-section-label{
   font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
-  color:var(--sidebar-sub);margin-bottom:6px;padding:0 4px;
+  color:#94a3b8;margin-bottom:6px;padding:0 4px;
 }
 .data-btn{
   display:flex;align-items:center;gap:7px;width:100%;
   padding:7px 10px;border-radius:5px;border:none;background:transparent;
-  color:var(--sidebar-sub);font-size:12px;cursor:pointer;
+  color:#64748b;font-size:12px;cursor:pointer;
   font-family:var(--sans);text-align:left;transition:all .12s;
 }
-.data-btn:hover{background:rgba(255,255,255,.06);color:var(--sidebar-text)}
-.data-btn.danger:hover{background:rgba(220,38,38,.15);color:#fca5a5}
+.data-btn:hover{background:#f1f5f9;color:#1e293b}
+.data-btn.danger:hover{background:#fef2f2;color:#dc2626}
 .data-btn svg{flex-shrink:0;opacity:.7}
 
 /* ── Demo button ── */
-.data-btn.demo{color:#a78bfa}
-.data-btn.demo:hover{background:rgba(124,58,237,.15);color:#c4b5fd}
+.data-btn.demo{color:#7c3aed}
+.data-btn.demo:hover{background:#f5f3ff;color:#6d28d9}
 
 /* ── Workflow hint (sidebar) ── */
 .workflow-hint{
   margin:8px 8px 0;padding:10px 10px 10px 12px;
-  border-radius:6px;background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.07);
+  border-radius:6px;background:#f8fafc;
+  border:1px solid #e2e8f0;
 }
 .workflow-hint-label{
   font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--sidebar-sub);margin-bottom:6px;
+  color:#94a3b8;margin-bottom:6px;
 }
 .workflow-steps{display:flex;flex-direction:column;gap:4px}
 .workflow-step{
-  display:flex;align-items:center;gap:7px;font-size:11px;color:var(--sidebar-sub);
+  display:flex;align-items:center;gap:7px;font-size:11px;color:#64748b;
 }
 .workflow-step-num{
   width:16px;height:16px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;
   font-size:9px;font-weight:700;flex-shrink:0;
 }
-.ws1 .workflow-step-num{background:rgba(37,99,235,.25);color:#60a5fa}
-.ws2 .workflow-step-num{background:rgba(217,119,6,.25);color:#fbbf24}
-.ws3 .workflow-step-num{background:rgba(5,150,105,.25);color:#34d399}
+.ws1 .workflow-step-num{background:#dbeafe;color:#2563eb}
+.ws2 .workflow-step-num{background:#fef3c7;color:#d97706}
+.ws3 .workflow-step-num{background:#d1fae5;color:#059669}
 .workflow-arrow{
-  font-size:9px;color:rgba(255,255,255,.15);
+  font-size:9px;color:#cbd5e1;
   padding-left:23px;line-height:1;
 }
 
-/* ── About modal ── */
+/* ── Basic Info form ── */
+.basic-info-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:16px;margin-bottom:16px;
+  box-shadow:var(--shadow);
+}
+.basic-info-title{
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--text-sub);margin-bottom:12px;
+  display:flex;align-items:center;gap:6px;
+}
+.basic-info-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+}
+.basic-info-field{display:flex;flex-direction:column;gap:4px}
+.basic-info-field.full{grid-column:1/-1}
+.basic-info-label{font-size:11px;font-weight:600;color:var(--text-sub)}
+.basic-info-input{
+  padding:7px 10px;background:var(--bg);border:1px solid var(--border);
+  border-radius:6px;color:var(--text);font-family:var(--sans);
+  font-size:13px;transition:border-color .15s;
+}
+.basic-info-input:focus{outline:none;border-color:var(--accent-e);background:#fff}
+.basic-info-input.saved{border-color:var(--ok)}
 .modal-overlay{
   position:fixed;inset:0;background:rgba(0,0,0,.55);
   display:flex;align-items:center;justify-content:center;
@@ -611,12 +650,15 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 <body>
 <div class="layout">
 
+  <!-- ── Sidebar toggle ── -->
+  <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" title="收合側欄">‹</button>
+
   <!-- ── Sidebar ── -->
   <aside class="sidebar">
     <div class="sidebar-brand">
       <div class="brand-name">訪談助手</div>
       <div class="brand-sub">中高齡職務再設計專案</div>
-      <button onclick="openAbout()" style="margin-top:7px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:var(--sidebar-sub);font-size:11px;padding:4px 10px;border-radius:5px;cursor:pointer;font-family:var(--sans);width:100%;text-align:center;transition:all .12s" onmouseover="this.style.color='#e2e8f0'" onmouseout="this.style.color=''">
+      <button onclick="openAbout()" style="margin-top:7px;background:#f1f5f9;border:1px solid #e2e8f0;color:#64748b;font-size:11px;padding:4px 10px;border-radius:5px;cursor:pointer;font-family:var(--sans);width:100%;text-align:center;transition:all .12s" onmouseover="this.style.background='#e2e8f0'" onmouseout="this.style.background='#f1f5f9'">
         ℹ️ 關於本工具
       </button>
     </div>
@@ -979,9 +1021,60 @@ function loadState() {
     if (c && groups[c]) currentGroup = c;
   } catch(e) {}
   if (Object.keys(groups).length === 0) {
-    groups['G1'] = {id:'G1', label:'第 1 組', answers_e:{}, answers_m:{}, analysis:null};
+    groups['G1'] = {id:'G1', label:'第 1 組', basicInfo:{}, answers_e:{}, answers_m:{}, analysis:null};
     currentGroup = 'G1';
   }
+  // 補齊舊資料缺少的 basicInfo 欄位
+  Object.values(groups).forEach(g => { if (!g.basicInfo) g.basicInfo = {}; });
+}
+
+// ─── Sidebar toggle ───────────────────────────────────
+function toggleSidebar() {
+  const layout = document.querySelector('.layout');
+  const btn = document.getElementById('sidebarToggle');
+  const collapsed = layout.classList.toggle('collapsed');
+  btn.textContent = collapsed ? '›' : '‹';
+  btn.title = collapsed ? '展開側欄' : '收合側欄';
+}
+
+// ─── Basic info ───────────────────────────────────────
+const BASIC_INFO_FIELDS = [
+  {key:'date',       label:'訪談日期',  type:'date',  full:false},
+  {key:'store',      label:'門市',      type:'text',  full:false},
+  {key:'empName',    label:'員工姓名',  type:'text',  full:false},
+  {key:'role',       label:'員工職稱',  type:'text',  full:false},
+  {key:'mgrName',    label:'主管姓名',  type:'text',  full:false},
+  {key:'mgrTitle',   label:'主管職稱',  type:'text',  full:false},
+  {key:'age',        label:'年齡區間',  type:'text',  full:false, placeholder:'例：50–55歲'},
+  {key:'seniority',  label:'年資',      type:'text',  full:false, placeholder:'例：2年3個月'},
+  {key:'interviewer',label:'訪談者',    type:'text',  full:true},
+];
+
+function setBasicInfoVal(key, val) {
+  const g = getG();
+  if (!g.basicInfo) g.basicInfo = {};
+  g.basicInfo[key] = val;
+  save();
+}
+
+function buildBasicInfoForm() {
+  const g = getG();
+  const info = g.basicInfo || {};
+  let html = `<div class="basic-info-card">
+    <div class="basic-info-title">📋 基本資訊</div>
+    <div class="basic-info-grid">`;
+  BASIC_INFO_FIELDS.forEach(f => {
+    const val = info[f.key] || '';
+    const saved = val.trim() ? ' saved' : '';
+    html += `<div class="basic-info-field ${f.full?'full':''}">
+      <label class="basic-info-label">${f.label}</label>
+      <input type="${f.type}" class="basic-info-input${saved}" value="${val.replace(/"/g,'&quot;')}"
+        placeholder="${f.placeholder||''}"
+        oninput="setBasicInfoVal('${f.key}',this.value);this.classList.toggle('saved',this.value.trim().length>0)">
+    </div>`;
+  });
+  html += `</div></div>`;
+  return html;
 }
 
 function save() {
@@ -1128,7 +1221,7 @@ function switchGroup(gid) {
 function newGroup() {
   const n = Object.keys(groups).length + 1;
   const gid = 'G'+n;
-  groups[gid] = {id:gid, label:'第 '+n+' 組', answers_e:{}, answers_m:{}, analysis:null};
+  groups[gid] = {id:gid, label:'第 '+n+' 組', basicInfo:{}, answers_e:{}, answers_m:{}, analysis:null};
   currentGroup = gid;
   save();
   renderNav();
@@ -1236,6 +1329,9 @@ function buildInterview(role) {
       <button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="switchTab('c')">查看落差比對 →</button>
     </div>`;
   }
+
+  // 基本資訊欄（只在員工訪談頁顯示，共用）
+  if (role === 'e') html += buildBasicInfoForm();
 
   const {done, total} = countProgress(role);
   const pct = total ? Math.round(done/total*100) : 0;
@@ -1869,13 +1965,16 @@ function buildAIText() {
 
   // ── 基本資料
   lines.push('【基本資料】');
-  lines.push('訪談日期：');
-  lines.push('門市：');
-  lines.push('受訪者名稱：');
-  lines.push('職務：');
-  lines.push('年齡區間：');
-  lines.push('年資：');
-  lines.push('訪談者：');
+  const info = g.basicInfo || {};
+  lines.push('訪談日期：'   + (info.date||'—'));
+  lines.push('門市：'       + (info.store||'—'));
+  lines.push('員工姓名：'   + (info.empName||'—'));
+  lines.push('員工職稱：'   + (info.role||'—'));
+  lines.push('主管姓名：'   + (info.mgrName||'—'));
+  lines.push('主管職稱：'   + (info.mgrTitle||'—'));
+  lines.push('年齡區間：'   + (info.age||'—'));
+  lines.push('年資：'       + (info.seniority||'—'));
+  lines.push('訪談者：'     + (info.interviewer||'—'));
   lines.push('');
 
   // ── 分析任務（含 AI 角色設定）
@@ -2108,10 +2207,28 @@ function exportPDF() {
   </style></head><body>`;
 
   const now = new Date().toLocaleDateString('zh-TW');
+  const info = g.basicInfo || {};
+  const infoRow = (label, key) => info[key] ? `<td><strong>${label}</strong>：${info[key]}</td>` : `<td><strong>${label}</strong>：—</td>`;
+
+  // ── 基本資訊表格（共用）──
+  const basicInfoHTML = `
+    <table style="width:100%;border-collapse:collapse;margin-bottom:14px;font-size:11px">
+      <tr style="background:#f8fafc">
+        ${infoRow('訪談日期','date')}${infoRow('門市','store')}${infoRow('訪談者','interviewer')}
+      </tr>
+      <tr>
+        ${infoRow('員工姓名','empName')}${infoRow('員工職稱','role')}${infoRow('年齡區間','age')}
+      </tr>
+      <tr style="background:#f8fafc">
+        ${infoRow('主管姓名','mgrName')}${infoRow('主管職稱','mgrTitle')}${infoRow('年資','seniority')}
+      </tr>
+    </table>
+    <style>.meta-table td{padding:5px 8px;border:1px solid #e2e8f0}</style>
+  `;
 
   // ── 員工訪談 ──
   html += `<h1>中高齡職務再設計 · ${g.label} · 員工訪談紀錄</h1>`;
-  html += `<div class="meta">匯出日期：${now}</div>`;
+  html += basicInfoHTML;
 
   MODULES.forEach(mod => {
     const qs = mod.questions;
@@ -2130,7 +2247,7 @@ function exportPDF() {
 
   // ── 店長訪談 ──
   html += `<h1 style="margin-top:8px">中高齡職務再設計 · ${g.label} · 店長訪談紀錄</h1>`;
-  html += `<div class="meta">匯出日期：${now}</div>`;
+  html += basicInfoHTML;
 
   MODULES.forEach(mod => {
     const qs = mod.questions.filter(q => q.m_q !== null || q.observer);
@@ -2151,7 +2268,7 @@ function exportPDF() {
 
   // ── 落差比對表 ──
   html += `<h1 style="margin-top:8px">中高齡職務再設計 · ${g.label} · 認知落差比對</h1>`;
-  html += `<div class="meta">匯出日期：${now}</div>`;
+  html += basicInfoHTML;
   html += `<table class="compare-table"><thead><tr>
     <th style="width:60px">題號</th>
     <th style="width:100px">比對項目</th>
