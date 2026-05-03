@@ -588,6 +588,40 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 }
 .basic-info-input:focus{outline:none;border-color:var(--accent-e);background:#fff}
 .basic-info-input.saved{border-color:var(--ok)}
+
+/* ── AI Result block ── */
+.ai-result-block{
+  margin-top:24px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);
+}
+.ai-result-hdr{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 16px;border-bottom:1px solid var(--border);
+  background:#fafafa;
+}
+.ai-result-icon{
+  width:32px;height:32px;border-radius:8px;
+  background:var(--accent-c-bg);
+  display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;
+}
+.ai-result-label{font-size:13px;font-weight:700;color:var(--text)}
+.ai-result-sub{font-size:11px;color:var(--text-sub);margin-top:1px}
+.ai-result-body{padding:14px 16px}
+.ai-result-textarea{
+  width:100%;min-height:200px;max-height:700px;
+  padding:12px 14px;background:var(--bg);
+  border:1px solid var(--border);border-radius:6px;
+  color:var(--text);font-family:var(--sans);font-size:13px;
+  line-height:1.75;resize:none;overflow-y:auto;
+  transition:border-color .15s;box-sizing:border-box;
+}
+.ai-result-textarea:focus{outline:none;border-color:var(--accent-c);background:#fff}
+.ai-result-hint{
+  font-size:11px;color:var(--ok);margin-top:6px;
+  height:16px;transition:opacity .3s;opacity:0;
+}
+.ai-result-hint.show{opacity:1}
 .modal-overlay{
   position:fixed;inset:0;background:rgba(0,0,0,.55);
   display:flex;align-items:center;justify-content:center;
@@ -1221,7 +1255,7 @@ function switchGroup(gid) {
 function newGroup() {
   const n = Object.keys(groups).length + 1;
   const gid = 'G'+n;
-  groups[gid] = {id:gid, label:'第 '+n+' 組', basicInfo:{}, answers_e:{}, answers_m:{}, analysis:null};
+  groups[gid] = {id:gid, label:'第 '+n+' 組', basicInfo:{}, answers_e:{}, answers_m:{}, analysis:null, ai_result:''};
   currentGroup = gid;
   save();
   renderNav();
@@ -1304,7 +1338,16 @@ function renderTopbar() {
 // ─── Render Content ───────────────────────────────────
 function renderContent() {
   const mc = document.getElementById('mainContent');
-  if (currentTab === 'c') { mc.innerHTML = buildCompare(); return; }
+  if (currentTab === 'c') {
+    mc.innerHTML = buildCompare();
+    // 載入後自動撐開 AI 結果 textarea
+    const ta = document.getElementById('aiResultInput');
+    if (ta && ta.value) {
+      ta.style.height = 'auto';
+      ta.style.height = ta.scrollHeight + 'px';
+    }
+    return;
+  }
   mc.innerHTML = buildInterview(currentTab);
   // restore textarea values
   mc.querySelectorAll('textarea[data-qid]').forEach(el => {
@@ -1693,6 +1736,29 @@ function buildCompare() {
   </div>`;
 
   html += `</div>`; // output-cards
+
+  // ── AI 分析結果區塊 ──
+  const savedResult = g.ai_result || '';
+  html += `
+  <div class="ai-result-block">
+    <div class="ai-result-hdr">
+      <div class="ai-result-icon">✨</div>
+      <div>
+        <div class="ai-result-label">AI 分析結果</div>
+        <div class="ai-result-sub">貼上 ChatGPT / Claude 的分析回覆，自動儲存</div>
+      </div>
+    </div>
+    <div class="ai-result-body">
+      <textarea
+        id="aiResultInput"
+        class="ai-result-textarea"
+        placeholder="請貼上 AI 分析結果（ChatGPT / Claude）"
+        oninput="onAiResultInput(this)"
+      >${savedResult.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea>
+      <div class="ai-result-hint" id="aiResultSavedHint">已自動儲存 ✔</div>
+    </div>
+  </div>`;
+
   return html;
 }
 
@@ -1700,6 +1766,25 @@ function resetAnalysis() {
   getG().analysis = null;
   save();
   renderContent();
+}
+
+// ─── AI Result ────────────────────────────────────────
+function onAiResultInput(el) {
+  // 自動撐開高度
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+  // 儲存
+  const g = getG();
+  if (!g.ai_result) g.ai_result = '';
+  g.ai_result = el.value;
+  save();
+  // 顯示儲存提示
+  const hint = document.getElementById('aiResultSavedHint');
+  if (hint) {
+    hint.classList.add('show');
+    clearTimeout(hint._timer);
+    hint._timer = setTimeout(() => hint.classList.remove('show'), 1500);
+  }
 }
 
 function calcDiff(q, ae, am) {
@@ -2332,6 +2417,15 @@ function exportPDF() {
     html += `<div class="section-break"></div>`;
     html += `<h1 style="margin-top:8px">AI 落差分析結果</h1>`;
     html += `<div style="font-size:12px;line-height:1.9;white-space:pre-wrap;padding:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:4px">${g.analysis}</div>`;
+  }
+
+  // ── AI 分析結果（新欄位）──
+  html += `<div class="section-break"></div>`;
+  html += `<h1 style="margin-top:8px">AI 分析結果</h1>`;
+  if (g.ai_result && g.ai_result.trim()) {
+    html += `<div style="font-size:12px;line-height:1.9;white-space:pre-wrap;padding:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:4px">${g.ai_result.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`;
+  } else {
+    html += `<div style="font-size:12px;color:#94a3b8;font-style:italic;padding:10px">未填寫</div>`;
   }
 
   html += `</body></html>`;
