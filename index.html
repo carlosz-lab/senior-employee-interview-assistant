@@ -1,0 +1,2376 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>中高齡職務再設計｜訪談助手</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#f5f6f8;
+  --surface:#ffffff;
+  --card:#ffffff;
+  --border:#dde1e9;
+  --border-light:#eef0f4;
+  --accent-e:#2563eb;
+  --accent-e-bg:#eff6ff;
+  --accent-m:#d97706;
+  --accent-m-bg:#fffbeb;
+  --accent-c:#7c3aed;
+  --accent-c-bg:#f5f3ff;
+  --warn:#dc2626;
+  --warn-bg:#fef2f2;
+  --ok:#059669;
+  --ok-bg:#ecfdf5;
+  --text:#1e293b;
+  --text-sub:#64748b;
+  --text-dim:#94a3b8;
+  --sidebar:#1e293b;
+  --sidebar-text:#e2e8f0;
+  --sidebar-sub:#94a3b8;
+  --sidebar-active:#2563eb;
+  --sidebar-active-bg:rgba(37,99,235,.15);
+  --mono:'JetBrains Mono',monospace;
+  --sans:'Noto Sans TC',sans-serif;
+  --radius:8px;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);
+  --shadow-md:0 4px 6px rgba(0,0,0,.07),0 2px 4px rgba(0,0,0,.06);
+}
+
+html,body{height:100%;overflow:hidden}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+
+/* ── Layout ── */
+.layout{display:grid;grid-template-columns:220px 1fr;height:100vh;overflow:hidden}
+
+/* ── Sidebar ── */
+.sidebar{
+  background:var(--sidebar);color:var(--sidebar-text);
+  display:flex;flex-direction:column;overflow:hidden;
+  border-right:1px solid rgba(255,255,255,.07);
+}
+.sidebar-brand{
+  padding:18px 16px 14px;
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+.brand-name{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#fff;margin-bottom:2px}
+.brand-sub{font-size:11px;color:var(--sidebar-sub)}
+
+.sidebar-section{padding:12px 10px 4px;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--sidebar-sub)}
+
+.nav-item{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 12px;border-radius:6px;margin:1px 6px;
+  cursor:pointer;font-size:13px;color:var(--sidebar-sub);
+  transition:all .15s;border:none;background:transparent;
+  text-align:left;width:calc(100% - 12px);
+}
+.nav-item:hover{background:rgba(255,255,255,.06);color:var(--sidebar-text)}
+.nav-item.active{background:var(--sidebar-active-bg);color:#60a5fa;font-weight:600}
+.nav-item .dot{
+  width:7px;height:7px;border-radius:50%;flex-shrink:0;
+  background:rgba(255,255,255,.2);
+}
+.nav-item .dot.done{background:var(--ok)}
+.nav-item .dot.partial{background:var(--accent-m)}
+
+.group-section{padding:12px 10px 6px;border-top:1px solid rgba(255,255,255,.07);margin-top:auto}
+.group-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--sidebar-sub);margin-bottom:6px}
+.group-list{display:flex;flex-direction:column;gap:2px;max-height:180px;overflow-y:auto}
+.group-list::-webkit-scrollbar{width:3px}
+.group-list::-webkit-scrollbar-track{background:transparent}
+.group-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:2px}
+.group-btn{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:6px 10px;border-radius:5px;cursor:pointer;
+  font-size:12px;color:var(--sidebar-sub);
+  background:transparent;border:none;text-align:left;transition:all .12s;
+}
+.group-btn:hover{background:rgba(255,255,255,.05);color:var(--sidebar-text)}
+.group-btn.active{background:rgba(255,255,255,.08);color:#fff;font-weight:600}
+.group-dots{display:flex;gap:3px}
+.group-dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.15)}
+.group-dot.e{background:#60a5fa}
+.group-dot.m{background:#fbbf24}
+.add-group-btn{
+  margin-top:6px;width:100%;padding:7px;border-radius:5px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  color:var(--sidebar-sub);font-size:12px;cursor:pointer;
+  font-family:var(--sans);transition:all .12s;
+}
+.add-group-btn:hover{background:rgba(255,255,255,.1);color:var(--sidebar-text)}
+
+/* ── Main content ── */
+.main{display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
+
+.topbar{
+  background:var(--surface);border-bottom:1px solid var(--border);
+  padding:12px 20px;display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.topbar-left{display:flex;align-items:center;gap:10px}
+.topbar-title{font-size:15px;font-weight:700;color:var(--text)}
+.topbar-sub{font-size:12px;color:var(--text-sub)}
+.topbar-badge{
+  padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700;
+}
+.badge-e{background:var(--accent-e-bg);color:var(--accent-e)}
+.badge-m{background:var(--accent-m-bg);color:var(--accent-m)}
+.badge-c{background:var(--accent-c-bg);color:var(--accent-c)}
+.badge-ok{background:var(--ok-bg);color:var(--ok)}
+.badge-warn{background:var(--warn-bg);color:var(--warn)}
+
+.content{flex:1;overflow-y:auto;padding:20px}
+.content::-webkit-scrollbar{width:5px}
+.content::-webkit-scrollbar-track{background:transparent}
+.content::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+/* ── Progress ── */
+.progress-wrap{margin-bottom:16px}
+.progress-info{display:flex;justify-content:space-between;margin-bottom:4px}
+.progress-bar{height:4px;background:var(--border-light);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;border-radius:2px;transition:width .3s}
+.fill-e{background:var(--accent-e)}
+.fill-m{background:var(--accent-m)}
+
+/* ── Module header ── */
+.mod-hdr{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;margin:16px 0 10px;
+  background:var(--surface);border-radius:var(--radius);
+  border:1px solid var(--border);
+  box-shadow:var(--shadow);
+}
+.mod-num{
+  font-family:var(--mono);font-size:11px;font-weight:600;
+  padding:2px 8px;border-radius:4px;
+}
+.num-e{background:var(--accent-e-bg);color:var(--accent-e)}
+.num-m{background:var(--accent-m-bg);color:var(--accent-m)}
+.mod-title{font-size:13px;font-weight:600;color:var(--text)}
+.mod-done{font-size:11px;color:var(--ok);margin-left:auto}
+
+/* ── Question card ── */
+.q-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:16px;margin-bottom:10px;
+  box-shadow:var(--shadow);
+}
+.q-card:hover{border-color:var(--border);}
+.q-meta{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.q-id{
+  font-family:var(--mono);font-size:10px;font-weight:600;
+  padding:2px 7px;border-radius:4px;
+}
+.qid-e{background:var(--accent-e-bg);color:var(--accent-e)}
+.qid-m{background:var(--accent-m-bg);color:var(--accent-m)}
+.q-type{font-size:10px;color:var(--text-sub);padding:2px 7px;background:var(--bg);border-radius:4px}
+.q-saved{font-size:11px;color:var(--ok)}
+
+.q-text{font-size:14px;font-weight:500;color:var(--text);margin-bottom:4px}
+.q-hint{font-size:12px;color:var(--text-sub);margin-bottom:10px;font-style:italic;padding-left:2px}
+
+/* ── Inputs ── */
+.ans-textarea{
+  width:100%;min-height:72px;padding:10px 12px;
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:6px;color:var(--text);font-family:var(--sans);
+  font-size:13px;resize:vertical;transition:border-color .15s;
+  line-height:1.6;
+}
+.ans-textarea:focus{outline:none;border-color:var(--accent-e);background:#fff}
+.ans-textarea.m:focus{border-color:var(--accent-m)}
+.ans-textarea.saved{border-color:var(--ok)}
+
+.ans-number{
+  width:100px;padding:8px 12px;
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:6px;color:var(--text);font-family:var(--mono);
+  font-size:14px;font-weight:600;transition:border-color .15s;
+}
+.ans-number:focus{outline:none;border-color:var(--accent-e);background:#fff}
+
+/* ── Scale ── */
+.scale-wrap{display:flex;flex-direction:column;gap:4px}
+.scale-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--text-sub);padding:0 2px}
+.scale-btns{display:flex;gap:6px}
+.scale-btn{
+  width:38px;height:38px;border-radius:6px;
+  border:1px solid var(--border);background:var(--bg);
+  color:var(--text-sub);cursor:pointer;font-family:var(--mono);
+  font-size:14px;font-weight:600;transition:all .12s;
+}
+.scale-btn:hover{border-color:var(--accent-e);color:var(--accent-e);background:var(--accent-e-bg)}
+.scale-btn.sel-e{background:var(--accent-e);border-color:var(--accent-e);color:#fff}
+.scale-btn.sel-m{background:var(--accent-m);border-color:var(--accent-m);color:#fff}
+
+/* ── Checkbox / Radio ── */
+.opts{display:flex;flex-direction:column;gap:4px}
+.opt-item{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 12px;border-radius:6px;cursor:pointer;
+  border:1px solid var(--border-light);background:var(--bg);
+  transition:all .12s;
+}
+.opt-item:hover{background:var(--accent-e-bg);border-color:var(--accent-e)}
+.opt-item.m:hover{background:var(--accent-m-bg);border-color:var(--accent-m)}
+.opt-item.sel{background:var(--accent-e-bg);border-color:var(--accent-e)}
+.opt-item.sel.m{background:var(--accent-m-bg);border-color:var(--accent-m)}
+.opt-chk{
+  width:16px;height:16px;border-radius:4px;
+  border:1.5px solid var(--border);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;background:#fff;
+}
+.opt-radio{border-radius:50%}
+.opt-item.sel .opt-chk{background:var(--accent-e);border-color:var(--accent-e)}
+.opt-item.sel.m .opt-chk{background:var(--accent-m);border-color:var(--accent-m)}
+.opt-text{font-size:13px;color:var(--text)}
+
+/* ── Scale multi grid ── */
+.scale-grid{display:flex;flex-direction:column;gap:3px;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.scale-grid-hdr{
+  display:grid;grid-template-columns:1fr 28px 28px 28px 28px 28px 28px;gap:4px;
+  padding:6px 10px;background:var(--bg);
+  font-size:10px;color:var(--text-sub);font-weight:600;letter-spacing:.05em;
+}
+.scale-grid-row{
+  display:grid;grid-template-columns:1fr 28px 28px 28px 28px 28px 28px;gap:4px;
+  padding:5px 10px;align-items:center;border-top:1px solid var(--border-light);
+}
+.scale-grid-row:hover{background:var(--accent-e-bg)}
+.sgr-label{font-size:12px;color:var(--text)}
+.sgr-btn{
+  width:28px;height:28px;border-radius:4px;border:1px solid var(--border);
+  background:var(--bg);color:var(--text-sub);cursor:pointer;
+  font-family:var(--mono);font-size:11px;font-weight:600;transition:all .1s;
+  display:flex;align-items:center;justify-content:center;
+}
+.sgr-btn:hover{border-color:var(--accent-e);color:var(--accent-e)}
+.sgr-btn.sel-e{background:var(--accent-e);border-color:var(--accent-e);color:#fff}
+.sgr-btn.sel-m{background:var(--accent-m);border-color:var(--accent-m);color:#fff}
+
+/* ── Freq check ── */
+.freq-grid{display:flex;flex-direction:column;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.freq-hdr{
+  display:grid;grid-template-columns:1fr 90px 70px 70px;gap:4px;
+  padding:7px 12px;background:var(--bg);
+  font-size:10px;color:var(--text-sub);font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+}
+.freq-row{
+  display:grid;grid-template-columns:1fr 90px 70px 70px;gap:4px;
+  padding:6px 12px;align-items:center;border-top:1px solid var(--border-light);
+}
+.freq-row:hover{background:var(--bg)}
+.freq-label{font-size:12px;color:var(--text)}
+.freq-opt{display:flex;align-items:center;justify-content:center}
+.freq-radio{
+  width:14px;height:14px;border:1.5px solid var(--border);border-radius:50%;
+  cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  background:#fff;transition:all .1s;
+}
+.freq-radio:hover{border-color:var(--accent-e)}
+.freq-radio.checked{background:var(--ok);border-color:var(--ok)}
+.freq-radio.checked.m{background:var(--accent-m);border-color:var(--accent-m)}
+
+/* ── Complete state ── */
+.interview-done{
+  padding:14px 16px;background:var(--ok-bg);border:1px solid rgba(5,150,105,.2);
+  border-radius:var(--radius);margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ok);font-weight:600;
+}
+
+/* ── Compare view ── */
+.compare-grid{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.cmp-row{
+  display:grid;grid-template-columns:160px 1fr 1fr;gap:10px;
+  align-items:start;
+}
+.cmp-meta{padding-top:4px}
+.cmp-meta-id{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--text-sub)}
+.cmp-meta-q{font-size:12px;color:var(--text);margin:2px 0}
+.cmp-cell{
+  padding:10px 12px;border-radius:var(--radius);
+  border:1px solid var(--border);background:var(--surface);
+  font-size:13px;min-height:44px;
+}
+.cmp-cell.e{border-top:2px solid var(--accent-e)}
+.cmp-cell.m{border-top:2px solid var(--accent-m)}
+.cmp-cell.high{background:var(--warn-bg);border-color:rgba(220,38,38,.3)}
+.cmp-cell.mid{background:var(--accent-m-bg);border-color:rgba(217,119,6,.3)}
+.cmp-empty{color:var(--text-dim);font-style:italic;font-size:12px}
+
+.diff-badge{
+  display:inline-flex;align-items:center;gap:3px;margin-top:4px;
+  padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;
+}
+.diff-high{background:var(--warn-bg);color:var(--warn)}
+.diff-mid{background:var(--accent-m-bg);color:var(--accent-m)}
+.diff-low{background:var(--ok-bg);color:var(--ok)}
+
+.section-title{
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--text-sub);padding:4px 0 8px;
+  border-bottom:1px solid var(--border);margin-bottom:12px;
+}
+
+/* ── AI Analysis ── */
+.analysis-box{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:18px;
+  box-shadow:var(--shadow-md);
+}
+.analysis-hdr{
+  font-size:12px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.1em;color:var(--text-sub);margin-bottom:12px;
+  display:flex;align-items:center;gap:8px;
+}
+.analysis-text{font-size:13px;line-height:1.9;white-space:pre-wrap;color:var(--text)}
+.analysis-empty{text-align:center;padding:24px;color:var(--text-sub)}
+
+/* ── Prompt panel ── */
+.prompt-panel{
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--radius);overflow:hidden;
+}
+.prompt-toolbar{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 14px;flex-wrap:wrap;
+}
+.prompt-desc{font-size:12px;color:var(--text-sub);flex:1;min-width:0;line-height:1.5}
+.btn-copy{
+  padding:7px 16px;border-radius:6px;border:none;cursor:pointer;
+  font-family:var(--sans);font-size:12px;font-weight:700;
+  background:var(--accent-e);color:#fff;
+  display:inline-flex;align-items:center;gap:6px;
+  transition:all .15s;flex-shrink:0;
+}
+.btn-copy:hover{background:#1d4ed8}
+.btn-copy.copied{background:var(--ok)}
+.btn-toggle-preview{
+  padding:6px 12px;border-radius:6px;border:1px solid var(--border);
+  background:var(--surface);color:var(--text-sub);cursor:pointer;
+  font-family:var(--sans);font-size:12px;
+  display:inline-flex;align-items:center;gap:5px;
+  transition:all .15s;flex-shrink:0;
+}
+.btn-toggle-preview:hover{border-color:var(--text-sub);color:var(--text)}
+.prompt-preview-wrap{
+  border-top:1px solid var(--border);
+  max-height:0;overflow:hidden;transition:max-height .3s ease;
+}
+.prompt-preview-wrap.open{max-height:300px}
+.prompt-preview{
+  font-family:var(--mono);font-size:11px;line-height:1.65;
+  color:var(--text);white-space:pre-wrap;word-break:break-word;
+  padding:14px;max-height:300px;overflow-y:auto;background:var(--bg);
+}
+.prompt-preview::-webkit-scrollbar{width:4px}
+.prompt-preview::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.prompt-platforms{
+  display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;align-items:center;
+}
+.platform-badge{
+  padding:4px 12px;border-radius:20px;border:1px solid var(--border);
+  font-size:11px;color:var(--text-sub);background:var(--surface);
+}
+.prompt-saved-result{
+  margin-top:14px;padding:14px;
+  background:#f0fdf4;border:1px solid #bbf7d0;border-radius:var(--radius);
+}
+.prompt-saved-hdr{
+  font-size:11px;font-weight:700;color:var(--ok);margin-bottom:8px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+
+/* ── Output section ── */
+.output-section-hdr{
+  display:flex;align-items:center;gap:8px;
+  margin:24px 0 12px;
+  font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-sub);
+}
+.output-section-hdr::before,.output-section-hdr::after{
+  content:'';flex:1;height:1px;background:var(--border);
+}
+.output-cards{display:flex;flex-direction:column;gap:12px}
+.output-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);
+}
+.output-card-hdr{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 16px;border-bottom:1px solid var(--border);
+}
+.output-card-icon{
+  width:32px;height:32px;border-radius:8px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+}
+.output-card-label{font-size:13px;font-weight:700;color:var(--text)}
+.output-card-sub{font-size:11px;color:var(--text-sub);margin-top:1px}
+.output-card-badge{
+  margin-left:auto;padding:2px 10px;border-radius:10px;
+  font-size:10px;font-weight:700;
+}
+.output-card-body{padding:14px 16px}
+.output-card-desc{font-size:12px;color:var(--text-sub);margin-bottom:12px;line-height:1.6}
+.output-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn-ai-copy{
+  padding:7px 16px;border-radius:6px;border:none;cursor:pointer;
+  font-family:var(--sans);font-size:12px;font-weight:700;
+  background:var(--accent-c);color:#fff;
+  display:inline-flex;align-items:center;gap:6px;
+  transition:all .15s;
+}
+.btn-ai-copy:hover{background:#6d28d9}
+.btn-ai-copy.copied{background:var(--ok)}
+.btn-ai-dl{
+  padding:7px 14px;border-radius:6px;border:1px solid var(--accent-c);cursor:pointer;
+  font-family:var(--sans);font-size:12px;font-weight:600;
+  background:transparent;color:var(--accent-c);
+  display:inline-flex;align-items:center;gap:6px;
+  transition:all .15s;
+}
+.btn-ai-dl:hover{background:var(--accent-c-bg)}
+.btn-pdf-main{
+  padding:7px 16px;border-radius:6px;border:none;cursor:pointer;
+  font-family:var(--sans);font-size:12px;font-weight:700;
+  background:var(--text);color:#fff;
+  display:inline-flex;align-items:center;gap:6px;
+  transition:all .15s;
+}
+.btn-pdf-main:hover{background:#334155}
+
+/* ── Buttons ── */
+.btn{
+  padding:8px 18px;border-radius:7px;cursor:pointer;
+  font-family:var(--sans);font-size:13px;font-weight:600;
+  border:none;transition:all .15s;display:inline-flex;align-items:center;gap:6px;
+}
+.btn-e{background:var(--accent-e);color:#fff}
+.btn-e:hover{background:#1d4ed8}
+.btn-m{background:var(--accent-m);color:#fff}
+.btn-m:hover{background:#b45309}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text-sub)}
+.btn-ghost:hover{border-color:var(--text-sub);color:var(--text)}
+.btn-sm{padding:5px 12px;font-size:12px}
+
+/* ── Spinner ── */
+.spinner{
+  width:18px;height:18px;border:2px solid var(--border);
+  border-top-color:var(--accent-e);border-radius:50%;
+  animation:spin .7s linear infinite;display:inline-block;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Empty state ── */
+.empty-state{text-align:center;padding:48px 20px;color:var(--text-sub)}
+.empty-icon{font-size:36px;margin-bottom:12px}
+.empty-text{font-size:14px;font-weight:600;margin-bottom:4px;color:var(--text)}
+.empty-sub{font-size:13px}
+
+/* ── Utils ── */
+.mt8{margin-top:8px}
+.mt12{margin-top:12px}
+.flex{display:flex}
+.gap8{gap:8px}
+.text-sm{font-size:12px}
+.text-ok{color:var(--ok)}
+.text-warn{color:var(--warn)}
+
+/* ── Auto-save toast ── */
+#savedToast{
+  position:fixed;bottom:20px;right:20px;
+  background:#1e293b;color:#e2e8f0;
+  padding:8px 16px;border-radius:8px;font-size:12px;
+  display:flex;align-items:center;gap:6px;
+  box-shadow:0 4px 12px rgba(0,0,0,.25);
+  opacity:0;transform:translateY(6px);pointer-events:none;
+  transition:opacity .2s,transform .2s;z-index:9999;
+}
+#savedToast.show{opacity:1;transform:translateY(0)}
+
+/* ── Local data notice ── */
+.local-notice{
+  background:#fffbeb;border-bottom:1px solid #fde68a;
+  padding:6px 20px;display:flex;align-items:center;gap:6px;
+  font-size:11px;color:#92400e;flex-shrink:0;
+}
+.local-notice svg{flex-shrink:0}
+
+/* ── Data mgmt section in sidebar ── */
+.data-section{
+  padding:10px 8px;border-top:1px solid rgba(255,255,255,.07);
+}
+.data-section-label{
+  font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--sidebar-sub);margin-bottom:6px;padding:0 4px;
+}
+.data-btn{
+  display:flex;align-items:center;gap:7px;width:100%;
+  padding:7px 10px;border-radius:5px;border:none;background:transparent;
+  color:var(--sidebar-sub);font-size:12px;cursor:pointer;
+  font-family:var(--sans);text-align:left;transition:all .12s;
+}
+.data-btn:hover{background:rgba(255,255,255,.06);color:var(--sidebar-text)}
+.data-btn.danger:hover{background:rgba(220,38,38,.15);color:#fca5a5}
+.data-btn svg{flex-shrink:0;opacity:.7}
+
+/* ── Demo button ── */
+.data-btn.demo{color:#a78bfa}
+.data-btn.demo:hover{background:rgba(124,58,237,.15);color:#c4b5fd}
+
+/* ── Workflow hint (sidebar) ── */
+.workflow-hint{
+  margin:8px 8px 0;padding:10px 10px 10px 12px;
+  border-radius:6px;background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.07);
+}
+.workflow-hint-label{
+  font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--sidebar-sub);margin-bottom:6px;
+}
+.workflow-steps{display:flex;flex-direction:column;gap:4px}
+.workflow-step{
+  display:flex;align-items:center;gap:7px;font-size:11px;color:var(--sidebar-sub);
+}
+.workflow-step-num{
+  width:16px;height:16px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:700;flex-shrink:0;
+}
+.ws1 .workflow-step-num{background:rgba(37,99,235,.25);color:#60a5fa}
+.ws2 .workflow-step-num{background:rgba(217,119,6,.25);color:#fbbf24}
+.ws3 .workflow-step-num{background:rgba(5,150,105,.25);color:#34d399}
+.workflow-arrow{
+  font-size:9px;color:rgba(255,255,255,.15);
+  padding-left:23px;line-height:1;
+}
+
+/* ── About modal ── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.55);
+  display:flex;align-items:center;justify-content:center;
+  z-index:10000;opacity:0;pointer-events:none;
+  transition:opacity .2s;
+}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal-box{
+  background:#fff;border-radius:12px;width:520px;max-width:92vw;
+  max-height:85vh;overflow-y:auto;
+  box-shadow:0 20px 60px rgba(0,0,0,.25);
+  transform:translateY(10px);transition:transform .2s;
+}
+.modal-overlay.open .modal-box{transform:translateY(0)}
+.modal-box::-webkit-scrollbar{width:4px}
+.modal-box::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.modal-hdr{
+  padding:20px 24px 16px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.modal-title{font-size:16px;font-weight:700;color:var(--text)}
+.modal-close{
+  width:28px;height:28px;border-radius:6px;border:none;background:var(--bg);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  color:var(--text-sub);font-size:16px;transition:all .12s;
+}
+.modal-close:hover{background:var(--border);color:var(--text)}
+.modal-body{padding:20px 24px}
+.about-section{margin-bottom:20px}
+.about-section:last-child{margin-bottom:0}
+.about-section-title{
+  font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--text-sub);margin-bottom:8px;
+  padding-bottom:6px;border-bottom:1px solid var(--border-light);
+}
+.about-section p{font-size:13px;color:var(--text);line-height:1.7;margin-bottom:6px}
+.about-section p:last-child{margin-bottom:0}
+.about-tag{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 10px;border-radius:10px;font-size:11px;font-weight:600;
+  margin:2px 3px 2px 0;
+}
+.about-flow{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  padding:12px 14px;background:var(--bg);border-radius:8px;
+  border:1px solid var(--border);margin-top:8px;
+}
+.about-flow-step{
+  display:flex;align-items:center;gap:6px;
+  font-size:12px;font-weight:600;color:var(--text);
+}
+.about-flow-step .step-dot{
+  width:22px;height:22px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;flex-shrink:0;
+}
+.about-flow-arrow{font-size:14px;color:var(--text-dim)}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-name">訪談助手</div>
+      <div class="brand-sub">中高齡職務再設計專案</div>
+      <button onclick="openAbout()" style="margin-top:7px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:var(--sidebar-sub);font-size:11px;padding:4px 10px;border-radius:5px;cursor:pointer;font-family:var(--sans);width:100%;text-align:center;transition:all .12s" onmouseover="this.style.color='#e2e8f0'" onmouseout="this.style.color=''">
+        ℹ️ 關於本工具
+      </button>
+    </div>
+
+    <div class="sidebar-section">訪談模式</div>
+    <button class="nav-item active" id="nav-e" onclick="switchTab('e')">
+      <div class="dot" id="dot-e"></div>
+      員工訪談
+    </button>
+    <button class="nav-item" id="nav-m" onclick="switchTab('m')">
+      <div class="dot" id="dot-m"></div>
+      店長訪談
+    </button>
+    <button class="nav-item" id="nav-c" onclick="switchTab('c')">
+      <div class="dot" style="background:rgba(255,255,255,.3)"></div>
+      落差比對 ＆ 分析
+    </button>
+
+    <div class="group-section">
+      <div class="group-label">受訪組別</div>
+      <div class="group-list" id="groupList"></div>
+      <button class="add-group-btn" onclick="newGroup()">＋ 新增組別</button>
+    </div>
+
+    <!-- ── Data management ── -->
+    <div class="data-section">
+      <div class="data-section-label">資料管理</div>
+      <button class="data-btn demo" onclick="loadDemoData()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        載入 Demo 資料
+      </button>
+      <button class="data-btn" onclick="exportJSON()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        匯出 JSON 備份
+      </button>
+      <button class="data-btn" onclick="document.getElementById('jsonFileInput').click()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        匯入 JSON
+      </button>
+      <button class="data-btn danger" onclick="clearCurrentGroup()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+        清除目前組別
+      </button>
+      <button class="data-btn danger" onclick="clearAllData()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        清除全部資料
+      </button>
+    </div>
+
+    <!-- ── Workflow hint ── -->
+    <div class="workflow-hint">
+      <div class="workflow-hint-label">建議流程</div>
+      <div class="workflow-steps">
+        <div class="workflow-step ws1">
+          <div class="workflow-step-num">1</div>
+          <span>員工 ＋ 店長訪談</span>
+        </div>
+        <div class="workflow-arrow">↓</div>
+        <div class="workflow-step ws2">
+          <div class="workflow-step-num">2</div>
+          <span>匯出 JSON 備份</span>
+        </div>
+        <div class="workflow-arrow">↓</div>
+        <div class="workflow-step ws3">
+          <div class="workflow-step-num">3</div>
+          <span>匯出 PDF 報告</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- hidden file input for JSON import -->
+  <input type="file" id="jsonFileInput" accept=".json" style="display:none" onchange="importJSON(this)">
+
+  <!-- ── Main ── -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <div>
+          <div class="topbar-title" id="topbarTitle">員工訪談</div>
+          <div class="topbar-sub" id="topbarSub">逐題填入員工的回答</div>
+        </div>
+        <span class="topbar-badge badge-e" id="topbarBadge">員工</span>
+      </div>
+      <div id="topbarRight" style="display:flex;gap:8px;align-items:center"></div>
+    </div>
+
+    <!-- Local-only notice -->
+    <div class="local-notice">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      本工具資料僅儲存在目前瀏覽器，不會上傳雲端，請定期使用左側「匯出 JSON 備份」保存資料
+    </div>
+
+    <div class="content" id="mainContent"></div>
+  </div>
+</div>
+
+<!-- Auto-save toast -->
+<div id="savedToast">
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+  已自動儲存
+</div>
+
+<!-- ── About Modal ── -->
+<div class="modal-overlay" id="aboutModal" onclick="if(event.target===this)closeAbout()">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <div class="modal-title">關於本工具</div>
+      <button class="modal-close" onclick="closeAbout()">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="about-section">
+        <div class="about-section-title">工具用途</div>
+        <p>本工具專為<strong>中高齡員工職務再設計</strong>訪談設計，協助人資與管理者系統性蒐集員工與店長雙方的主觀感受，快速識別認知落差，作為職務調整與管理改善的依據。</p>
+        <p>訪談結果可直接匯出 PDF 報告，適合用於個案檔案建立、團隊討論或主管回饋。</p>
+      </div>
+
+      <div class="about-section">
+        <div class="about-section-title">使用情境</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px">
+          <span class="about-tag" style="background:var(--accent-e-bg);color:var(--accent-e)">🏪 門市現場訪談</span>
+          <span class="about-tag" style="background:var(--accent-m-bg);color:var(--accent-m)">📋 管理診斷評估</span>
+          <span class="about-tag" style="background:var(--accent-c-bg);color:var(--accent-c)">🔍 跨世代溝通分析</span>
+          <span class="about-tag" style="background:var(--ok-bg);color:var(--ok)">📄 職務再設計文件產出</span>
+        </div>
+        <p>適合對象：門市店長、人資夥伴、輔導顧問、訓練負責人。每組訪談建議分兩次進行，員工與店長各別訪談，避免相互影響。</p>
+      </div>
+
+      <div class="about-section">
+        <div class="about-section-title">訪談模組說明</div>
+        <p>共六個模組，涵蓋：<strong>M1 工作站負荷</strong>、<strong>M2 學習與導入</strong>、<strong>M3 生理負荷</strong>、<strong>M4 公平知覺</strong>、<strong>M5 跨世代關係</strong>、<strong>M6 綜合回饋</strong>。</p>
+        <p>每個模組提供員工版與店長版問法，完成後可在「落差比對」頁查看雙方認知差距，並支援產生 AI 分析資料，可複製後貼至 ChatGPT / Claude / Gemini 進行分析。</p>
+      </div>
+
+      <div class="about-section">
+        <div class="about-section-title">建議使用流程</div>
+        <div class="about-flow">
+          <div class="about-flow-step">
+            <div class="step-dot" style="background:var(--accent-e-bg);color:var(--accent-e)">1</div>
+            員工訪談
+          </div>
+          <div class="about-flow-arrow">→</div>
+          <div class="about-flow-step">
+            <div class="step-dot" style="background:var(--accent-m-bg);color:var(--accent-m)">2</div>
+            店長訪談
+          </div>
+          <div class="about-flow-arrow">→</div>
+          <div class="about-flow-step">
+            <div class="step-dot" style="background:var(--accent-c-bg);color:var(--accent-c)">3</div>
+            落差比對
+          </div>
+          <div class="about-flow-arrow">→</div>
+          <div class="about-flow-step">
+            <div class="step-dot" style="background:#fef3c7;color:#d97706">4</div>
+            匯出 JSON
+          </div>
+          <div class="about-flow-arrow">→</div>
+          <div class="about-flow-step">
+            <div class="step-dot" style="background:var(--ok-bg);color:var(--ok)">5</div>
+            匯出 PDF
+          </div>
+        </div>
+      </div>
+
+      <div class="about-section">
+        <div class="about-section-title">資料與隱私</div>
+        <p>所有訪談資料<strong>僅儲存在本機瀏覽器（localStorage）</strong>，不會傳送至任何伺服器或雲端。清除瀏覽器資料前，請務必先使用「匯出 JSON」功能備份。</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── 題目資料庫 ───────────────────────────────────────
+const MODULES = [
+  {
+    id:'M1', title:'工作站負荷',
+    questions:[
+      { id:'M1_stations', type:'scale_multi',
+        e_q:'請評估各工作站對你的難度（0＝未做過，1＝很輕鬆，5＝很吃力）',
+        m_q:'請評估這位員工在各工作站的表現穩定度（0＝未排過，1＝不穩，5＝穩定）',
+        label:'工作站難度／表現',
+        items:['炸台','煮台','烤台','麵台','後備','品管','洗滌','帶位接待','點餐收銀','送餐跑單','桌邊服務','外帶窗口','清潔維護'],
+        comparable:true
+      },
+      { id:'M1_type', type:'multi_check_other',
+        e_q:'你覺得吃力的原因類型（可複選）',
+        m_q:'你觀察到這位員工的困難類型（可複選）',
+        label:'困難類型',
+        options:['體力負荷（久站、搬運、高溫）','速度節奏（尖峰時跟不上）','記憶流程（步驟多、易搞混）','設備操作（機器、POS不熟）','顧客應對（溝通、情緒處理）','視力或聽力（看不清楚、聽不清楚）','其他'],
+        comparable:true
+      },
+      { id:'M1_open', type:'open',
+        e_q:'你剛剛勾的這幾個，哪一個對你影響最大？',
+        m_q:'你評分比較低的工作站，他通常怎麼處理？',
+        label:'追問：影響最大的是哪一個？',
+        comparable:true
+      }
+    ]
+  },
+  {
+    id:'M2', title:'學習與導入',
+    questions:[
+      { id:'M2_s1', type:'scale',
+        e_q:'剛來的前兩週，整體學習的壓力感是幾分？',
+        m_q:'這位員工剛來前兩週，你評估他的學習壓力大概是幾分？',
+        label:'學習壓力感',
+        hint_e:'1＝完全沒壓力，5＝壓力很大',
+        hint_m:'1＝幾乎沒壓力，5＝壓力很大',
+        comparable:true
+      },
+      { id:'M2_s2', type:'scale',
+        e_q:'當時帶你的方式，對你有多有效？',
+        m_q:'你當時帶他的方式，自己評估有多有效？',
+        label:'導入方式有效度',
+        hint_e:'1＝完全沒用，5＝非常有效',
+        hint_m:'1＝完全沒用，5＝非常有效',
+        comparable:true
+      },
+      { id:'M2_q1', type:'open',
+        e_q:'跟剛來比，你覺得自己現在進步最多的是哪個部分？',
+        m_q:'跟剛來比，你覺得他現在進步最明顯的是哪裡？',
+        label:'進步最多的部分', comparable:true
+      },
+      { id:'M2_q2', type:'open',
+        e_q:'現在還有哪個部分，你覺得自己還沒完全上手？',
+        m_q:'你覺得他目前還有哪個部分需要繼續磨？',
+        label:'未完全上手的部分', comparable:true
+      },
+      { id:'M2_q3', type:'open',
+        e_q:'如果可以重來，你希望一開始有什麼不一樣？',
+        m_q:'如果下次再帶類似的新人，你會想調整什麼？',
+        label:'希望改變的地方', comparable:true
+      }
+    ]
+  },
+  {
+    id:'M3', title:'生理負荷',
+    questions:[
+      { id:'M3_freq', type:'freq_check',
+        e_q:'下面這些情況，在你工作時有沒有出現過？',
+        m_q:'你觀察這位員工，下列情況有沒有出現過？',
+        label:'生理負荷現象',
+        items:['工作到後半段動作會比剛開始慢','下班後需要很長時間才覺得恢復','尖峰時段腦袋有點轉不過來','有時沒聽清楚指令但沒再問','有時看錯單或記錯步驟','某些動作做久了身體會不舒服'],
+        comparable:true
+      },
+      { id:'M3_time', type:'single_check',
+        e_q:'一天的班排下來，你通常哪個時段最費力？',
+        m_q:'你觀察，他哪個時段狀態最差？',
+        label:'最費力的時段',
+        options_e:['開班前半段就已偏累','中間有一段比較低落','尖峰後明顯疲乏','整體差不多'],
+        options_m:['剛開始就狀態不穩','中段有明顯疲態','尖峰後表現下滑','整體差不多'],
+        comparable:true
+      },
+      { id:'M3_open', type:'open',
+        e_q:'勾「常常有」的項目，你通常怎麼處理？',
+        m_q:'這些狀況你有沒有跟他提過？他的反應是什麼？',
+        label:'追問：如何處理', comparable:true
+      }
+    ]
+  },
+  {
+    id:'M4', title:'公平知覺',
+    questions:[
+      { id:'M4_p1', type:'scale',
+        e_q:'我覺得我的工作量，跟其他同事是差不多公平的',
+        m_q:'我給這位員工的工作量，跟其他同事是公平的',
+        label:'工作量公平感',
+        hint_e:'1＝非常不同意，5＝非常同意',
+        hint_m:'1＝非常不同意，5＝非常同意',
+        comparable:true
+      },
+      { id:'M4_p2', type:'scale',
+        e_q:'我覺得店長在分配工作或處理問題時，對大家的標準是一致的',
+        m_q:'我對這位員工和其他同事，處理方式的標準是一致的',
+        label:'處理標準一致性',
+        comparable:true
+      },
+      { id:'M4_p3', type:'scale',
+        e_q:'當我工作表現好的時候，店長會注意到',
+        m_q:'當他表現好的時候，我有讓他知道',
+        label:'表現被看見',
+        comparable:true
+      },
+      { id:'M4_open', type:'open',
+        e_q:'評分3分以下的項目，可以舉個具體的例子嗎？',
+        m_q:'最近一次你給他正面回饋，是什麼時候？說了什麼？',
+        label:'公平知覺追問', comparable:false
+      }
+    ]
+  },
+  {
+    id:'M5', title:'跨世代關係',
+    questions:[
+      { id:'M5_g1', type:'single_check',
+        e_q:'當你對工作上某個做法有不同想法時，你通常怎麼處理？',
+        m_q:'當你需要糾正或給這位員工建議時，你通常怎麼做？',
+        label:'表達意見的習慣',
+        options_e:['會直接跟店長說','找適當時機說','默默調整，不說','覺得說了也沒用','看情況'],
+        options_m:['直接當下說','找私下時機說','用示範代替說','比較少說，怕他不舒服','看情況'],
+        comparable:true
+      },
+      { id:'M5_g2', type:'open',
+        e_q:'是什麼讓你選擇說或不說？有沒有哪次有想法但沒說出來？',
+        m_q:'你上一次給他具體的改進建議是什麼時候？你怎麼說的？',
+        label:'溝通背後的原因', comparable:false
+      },
+      { id:'M5_g3', type:'open',
+        e_q:'你有沒有看過其他跟你差不多年紀的人，在這種環境裡遇到什麼困難？',
+        m_q:'帶比你年長的員工，跟帶年輕員工，你覺得哪裡不一樣？',
+        label:'第三人稱投射', comparable:false
+      },
+      { id:'M5_g4', type:'scale',
+        e_q:'你覺得店長理解你工作上的限制嗎？',
+        m_q:'你覺得這位員工對你的管理方式，接受度怎麼樣？',
+        label:'彼此的理解與接受度',
+        hint_e:'1＝完全不理解，5＝非常理解',
+        hint_m:'1＝幾乎不接受，5＝非常接受',
+        comparable:true
+      }
+    ]
+  },
+  {
+    id:'M6', title:'綜合回饋',
+    questions:[
+      { id:'M6_f1', type:'open',
+        e_q:'有沒有什麼我沒有問到、但你覺得重要的事情想說？',
+        m_q:'有沒有什麼我沒有問到、但你覺得重要的事情想說？',
+        label:'補充想說的事', comparable:false
+      },
+      { id:'M6_f2', type:'open',
+        e_q:'如果要讓這份工作對你來說更好，你覺得最需要改變的一件事是什麼？',
+        m_q:'如果公司要更好地支持你帶中高齡員工，你最需要什麼？',
+        label:'最想改變的一件事', comparable:true
+      },
+      { id:'M6_f3', type:'open',
+        e_q:null,
+        m_q:null,
+        label:'訪談者補充觀察（肢體語言、情緒狀態、迴避行為、訪談氛圍等）',
+        e_label:'訪談者補充觀察（肢體語言、情緒狀態、迴避行為等）',
+        m_label:'訪談者補充觀察（店長整體態度、特別提到的事、訪談氛圍等）',
+        comparable:false, observer:true
+      }
+    ]
+  }
+];
+
+// ─── 狀態 ─────────────────────────────────────────────
+let groups = {};
+let currentGroup = 'G1';
+let currentTab = 'e';
+
+function loadState() {
+  try {
+    const g = localStorage.getItem('itv_groups');
+    const c = localStorage.getItem('itv_current');
+    if (g) groups = JSON.parse(g);
+    if (c && groups[c]) currentGroup = c;
+  } catch(e) {}
+  if (Object.keys(groups).length === 0) {
+    groups['G1'] = {id:'G1', label:'第 1 組', answers_e:{}, answers_m:{}, analysis:null};
+    currentGroup = 'G1';
+  }
+}
+
+function save() {
+  try {
+    localStorage.setItem('itv_groups', JSON.stringify(groups));
+    localStorage.setItem('itv_current', currentGroup);
+    showSavedToast();
+  } catch(e) {}
+}
+
+// ─── Auto-save toast ──────────────────────────────────
+let _toastTimer = null;
+function showSavedToast() {
+  const t = document.getElementById('savedToast');
+  if (!t) return;
+  t.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+// ─── Export JSON ──────────────────────────────────────
+function exportJSON() {
+  const payload = {
+    _version: 1,
+    _exported: new Date().toISOString(),
+    groups,
+    currentGroup
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type: 'application/json;charset=utf-8'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  const ts   = new Date().toISOString().slice(0,16).replace('T','_').replace(/:/g,'-');
+  a.href     = url;
+  a.download = `訪談資料_備份_${ts}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 3000);
+}
+
+// ─── Import JSON ──────────────────────────────────────
+function importJSON(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const payload = JSON.parse(e.target.result);
+      if (!payload.groups || typeof payload.groups !== 'object') {
+        alert('❌ 檔案格式不正確，請選擇由本工具匯出的 JSON 備份檔。');
+        return;
+      }
+      groups = payload.groups;
+      if (payload.currentGroup && groups[payload.currentGroup]) {
+        currentGroup = payload.currentGroup;
+      } else {
+        currentGroup = Object.keys(groups)[0];
+      }
+      save();
+      renderNav();
+      renderTopbar();
+      renderContent();
+      alert('✅ 匯入成功！已還原 ' + Object.keys(groups).length + ' 組訪談資料。');
+    } catch(err) {
+      alert('❌ 無法解析 JSON 檔案，請確認檔案完整。');
+    }
+    input.value = '';
+  };
+  reader.readAsText(file, 'utf-8');
+}
+
+// ─── Clear data ───────────────────────────────────────
+function clearCurrentGroup() {
+  const g = getG();
+  if (!confirm(`確定要清除「${g.label}」的所有訪談資料嗎？\n\n此操作無法復原，建議先匯出 JSON 備份。`)) return;
+  if (!confirm(`再次確認：清除「${g.label}」的全部資料？`)) return;
+  g.answers_e = {};
+  g.answers_m = {};
+  g.analysis  = null;
+  save();
+  renderNav();
+  renderTopbar();
+  renderContent();
+}
+
+function clearAllData() {
+  if (!confirm('確定要清除「全部組別」的所有訪談資料嗎？\n\n此操作無法復原，建議先匯出 JSON 備份。')) return;
+  if (!confirm('再次確認：清除全部資料並重設為初始狀態？')) return;
+  groups = { G1: {id:'G1', label:'第 1 組', answers_e:{}, answers_m:{}, analysis:null} };
+  currentGroup = 'G1';
+  save();
+  renderNav();
+  renderTopbar();
+  renderContent();
+}
+
+function getG() { return groups[currentGroup]; }
+
+function getAns(role, qid) {
+  const g = getG();
+  return role==='e' ? (g.answers_e[qid]??null) : (g.answers_m[qid]??null);
+}
+
+function setAnsVal(role, qid, val) {
+  const g = getG();
+  if (role==='e') g.answers_e[qid]=val;
+  else g.answers_m[qid]=val;
+  g.analysis = null;
+  save();
+}
+
+function countProgress(role) {
+  let total=0, done=0;
+  MODULES.forEach(mod => mod.questions.forEach(q => {
+    if (role==='m' && q.m_q===null) return;
+    total++;
+    const a = getAns(role, q.id);
+    if (a && (typeof a !== 'string' || a.trim())) done++;
+  }));
+  return {total, done};
+}
+
+function isDone(role) {
+  const {total, done} = countProgress(role);
+  return done >= total && total > 0;
+}
+
+// ─── Nav ─────────────────────────────────────────────
+function switchTab(t) {
+  currentTab = t;
+  renderNav();
+  renderTopbar();
+  renderContent();
+}
+
+function switchGroup(gid) {
+  currentGroup = gid;
+  save();
+  renderNav();
+  renderTopbar();
+  renderContent();
+}
+
+function newGroup() {
+  const n = Object.keys(groups).length + 1;
+  const gid = 'G'+n;
+  groups[gid] = {id:gid, label:'第 '+n+' 組', answers_e:{}, answers_m:{}, analysis:null};
+  currentGroup = gid;
+  save();
+  renderNav();
+  renderTopbar();
+  renderContent();
+}
+
+// ─── Render Nav ───────────────────────────────────────
+function renderNav() {
+  ['e','m','c'].forEach(t => {
+    const el = document.getElementById('nav-'+t);
+    if (!el) return;
+    el.className = 'nav-item' + (currentTab===t?' active':'');
+  });
+  const de = isDone('e'), dm = isDone('m');
+  setDot('dot-e', de ? 'done' : (Object.keys(getG().answers_e).length>0 ? 'partial' : ''));
+  setDot('dot-m', dm ? 'done' : (Object.keys(getG().answers_m).length>0 ? 'partial' : ''));
+
+  const gl = document.getElementById('groupList');
+  if (!gl) return;
+  gl.innerHTML = Object.values(groups).map(g => {
+    const isActive = g.id === currentGroup;
+    const de2 = isDoneFor(g,'e'), dm2 = isDoneFor(g,'m');
+    return `<button class="group-btn ${isActive?'active':''}" onclick="switchGroup('${g.id}')">
+      ${g.label}
+      <div class="group-dots">
+        <div class="group-dot ${de2?'e':''}"></div>
+        <div class="group-dot ${dm2?'m':''}"></div>
+      </div>
+    </button>`;
+  }).join('');
+}
+
+function isDoneFor(g, role) {
+  let total=0, done=0;
+  MODULES.forEach(mod => mod.questions.forEach(q => {
+    if (role==='m' && q.m_q===null) return;
+    total++;
+    const a = role==='e' ? g.answers_e[q.id] : g.answers_m[q.id];
+    if (a && (typeof a !== 'string' || a.trim())) done++;
+  }));
+  return done >= total && total > 0;
+}
+
+function setDot(id, state) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.className = 'dot' + (state ? ' '+state : '');
+}
+
+// ─── Render Topbar ────────────────────────────────────
+function renderTopbar() {
+  const titles = { e:'員工訪談', m:'店長訪談', c:'落差比對 ＆ AI 分析' };
+  const subs = { e:'逐題填入員工的回答', m:'逐題填入店長的回答', c:'雙方認知比對與追問建議' };
+  const badgeClass = { e:'badge-e', m:'badge-m', c:'badge-c' };
+  const badgeText = { e:'員工', m:'店長', c:'比對' };
+  document.getElementById('topbarTitle').textContent = titles[currentTab];
+  document.getElementById('topbarSub').textContent = subs[currentTab];
+  const b = document.getElementById('topbarBadge');
+  b.className = 'topbar-badge ' + badgeClass[currentTab];
+  b.textContent = badgeText[currentTab] + ' · ' + getG().label;
+
+  const right = document.getElementById('topbarRight');
+  const progHtml = currentTab !== 'c' ? (() => { const {done,total}=countProgress(currentTab); return `<span style="font-size:12px;color:var(--text-sub)">${done} / ${total} 題已填</span>`; })() : '';
+  if (currentTab === 'c') {
+    right.innerHTML = `
+      <button class="btn btn-ghost btn-sm" onclick="exportPDF()" style="display:flex;align-items:center;gap:5px">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+        PDF 報告
+      </button>
+      <button class="btn btn-ghost btn-sm" onclick="copyAIText(this)" style="display:flex;align-items:center;gap:5px">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        複製 AI 資料
+      </button>`;
+  } else {
+    right.innerHTML = progHtml + `<button class="btn btn-ghost btn-sm" onclick="exportPDF()" style="display:flex;align-items:center;gap:5px;margin-left:8px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>匯出 PDF</button>`;
+  }
+}
+
+// ─── Render Content ───────────────────────────────────
+function renderContent() {
+  const mc = document.getElementById('mainContent');
+  if (currentTab === 'c') { mc.innerHTML = buildCompare(); return; }
+  mc.innerHTML = buildInterview(currentTab);
+  // restore textarea values
+  mc.querySelectorAll('textarea[data-qid]').forEach(el => {
+    const a = getAns(el.dataset.role, el.dataset.qid);
+    if (a) { el.value = a; el.classList.add('saved'); }
+  });
+  mc.querySelectorAll('input[type=number][data-qid]').forEach(el => {
+    const a = getAns(el.dataset.role, el.dataset.qid);
+    if (a) el.value = a;
+  });
+}
+
+// ─── Interview builder ────────────────────────────────
+function buildInterview(role) {
+  const r = role;
+  const ac = role;
+  let html = '';
+
+  if (isDone(role)) {
+    html += `<div class="interview-done">
+      ✓ ${role==='e'?'員工':'店長'}訪談已完成，所有回答已儲存
+      <button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="switchTab('c')">查看落差比對 →</button>
+    </div>`;
+  }
+
+  const {done, total} = countProgress(role);
+  const pct = total ? Math.round(done/total*100) : 0;
+  html += `<div class="progress-wrap">
+    <div class="progress-info">
+      <span class="text-sm" style="color:var(--text-sub)">填寫進度</span>
+      <span class="text-sm" style="color:var(--text-sub)">${done} / ${total} 題 · ${pct}%</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill fill-${ac}" style="width:${pct}%"></div></div>
+  </div>`;
+
+  MODULES.forEach(mod => {
+    const qs = mod.questions.filter(q => !(role==='m' && q.m_q===null));
+    if (!qs.length) return;
+
+    const modDone = qs.every(q => {
+      const a = getAns(role, q.id);
+      return a && (typeof a !== 'string' || a.trim());
+    });
+
+    html += `<div class="mod-hdr">
+      <span class="mod-num num-${ac}">${mod.id}</span>
+      <span class="mod-title">${mod.title}</span>
+      ${modDone ? '<span class="mod-done">✓ 本模組完成</span>' : ''}
+    </div>`;
+
+    qs.forEach(q => {
+      // observer 題型的 e_q/m_q 為 null，改用 label
+      const qtext = q.observer ? q.label : (role==='e' ? (q.e_q||q.label) : (q.m_q||q.label));
+      const hint = role==='e' ? q.hint_e : q.hint_m;
+      const ans = getAns(role, q.id);
+      const saved = ans && (typeof ans !== 'string' || ans.trim());
+
+      html += `<div class="q-card">
+        <div class="q-meta">
+          <span class="q-id qid-${ac}">${q.id}</span>
+          <span class="q-type">${typeLabel(q.type)}</span>
+          ${saved ? '<span class="q-saved">✓ 已儲存</span>' : ''}
+        </div>
+        <div class="q-text">${qtext}</div>
+        ${hint ? `<div class="q-hint">${hint}</div>` : ''}
+        ${buildInput(role, q, ac)}
+      </div>`;
+    });
+  });
+
+  return html;
+}
+
+function typeLabel(t) {
+  return {open:'開放問答',scale:'量表 1–5',scale_multi:'逐項量表',multi_check:'多選',
+    freq_check:'頻率勾選',single_check:'單選',number:'填寫數字'}[t]||t;
+}
+
+function buildInput(role, q, ac) {
+  const ans = getAns(role, q.id);
+
+  if (q.type==='open') {
+    if (q.observer) {
+      // 訪談者補充觀察欄，e_q/m_q 為 null，用 e_label/m_label
+      const obsLabel = role==='e' ? (q.e_label||q.label) : (q.m_label||q.label);
+      return `<div class="q-hint" style="margin-bottom:6px">${obsLabel}</div>
+        <textarea class="ans-textarea ${ac} ${ans?'saved':''}"
+          data-qid="${q.id}" data-role="${role}"
+          oninput="onTextInput(this,'${role}','${q.id}')"
+          style="min-height:80px"
+          placeholder="訪談者自行填寫觀察記錄…"></textarea>`;
+    }
+    return `<textarea class="ans-textarea ${ac} ${ans?'saved':''}"
+      data-qid="${q.id}" data-role="${role}"
+      oninput="onTextInput(this,'${role}','${q.id}')"
+      placeholder="輸入${role==='e'?'員工':'店長'}的回答…"></textarea>`;
+  }
+
+  if (q.type==='number') {
+    return `<input type="number" class="ans-number" min="40" max="75"
+      data-qid="${q.id}" data-role="${role}"
+      oninput="onTextInput(this,'${role}','${q.id}')"
+      placeholder="歲">`;
+  }
+
+  if (q.type==='scale') {
+    const v = ans ? parseInt(ans) : 0;
+    let btns = '';
+    for (let i=1;i<=5;i++) {
+      btns += `<button class="scale-btn ${v===i?'sel-'+ac:''}" onclick="setAnsVal('${role}','${q.id}','${i}');renderContent();renderNav()">${i}</button>`;
+    }
+    return `<div class="scale-wrap">
+      <div class="scale-labels"><span>1 非常低</span><span>5 非常高</span></div>
+      <div class="scale-btns">${btns}</div>
+    </div>`;
+  }
+
+  if (q.type==='multi_check' || q.type==='multi_check_other') {
+    const parsed = ans ? safeParseObj2(ans) : {sel:[], other:''};
+    const sel = parsed.sel || [];
+    const otherText = parsed.other || '';
+    const isOther = q.type==='multi_check_other';
+    let html = '<div class="opts">' + q.options.map(opt => {
+      const on = sel.includes(opt);
+      const isOtherOpt = opt === '其他';
+      return `<div class="opt-item ${ac} ${on?'sel':''}" onclick="toggleCheckObj('${role}','${q.id}','${escQ(opt)}')">
+        <div class="opt-chk">${on?chkSvg():''}</div>
+        <span class="opt-text">${opt}</span>
+      </div>` + (isOtherOpt && on ? `<div style="margin-top:4px;padding-left:12px"><textarea class="ans-textarea ${ac}" style="min-height:44px" placeholder="請補充說明…" oninput="setOtherText('${role}','${q.id}',this.value)">${otherText}</textarea></div>` : '');
+    }).join('') + '</div>';
+    return html;
+  }
+
+  if (q.type==='freq_check') {
+    const saved = ans ? safeParseObj(ans) : {};
+    const opts = ['從來沒有','偶爾有','常常有'];
+    let html = `<div class="freq-grid">
+      <div class="freq-hdr"><div>現象描述</div>${opts.map(o=>`<div style="text-align:center">${o}</div>`).join('')}</div>`;
+    q.items.forEach(item => {
+      const v = saved[item]||'';
+      html += `<div class="freq-row"><span class="freq-label">${item}</span>`;
+      opts.forEach(opt => {
+        const on = v===opt;
+        const warnCls = on && opt==='常常有' ? ' m' : '';
+        html += `<div class="freq-opt">
+          <div class="freq-radio ${on?'checked'+warnCls:''}" onclick="setFreqItem('${role}','${q.id}','${escQ(item)}','${opt}')">
+            ${on ? '<div style="width:6px;height:6px;border-radius:50%;background:#fff;margin:auto"></div>' : ''}
+          </div>
+        </div>`;
+      });
+      html += '</div>';
+    });
+    return html + '</div>';
+  }
+
+  if (q.type==='single_check') {
+    const opts = (role==='e' ? q.options_e : q.options_m) || q.options || [];
+    return '<div class="opts">' + opts.map(opt => {
+      const on = ans===opt;
+      return `<div class="opt-item ${ac} ${on?'sel':''}" onclick="setSingle('${role}','${q.id}','${escQ(opt)}')">
+        <div class="opt-chk opt-radio">${on?'<div style="width:6px;height:6px;border-radius:50%;background:#fff;margin:auto"></div>':''}</div>
+        <span class="opt-text">${opt}</span>
+      </div>`;
+    }).join('') + '</div>';
+  }
+
+  if (q.type==='scale_multi') {
+    const saved = ans ? safeParseObj(ans) : {};
+    let html = `<div class="scale-grid">
+      <div class="scale-grid-hdr"><div>工作站</div><div style="text-align:center">×</div><div style="text-align:center">1</div><div style="text-align:center">2</div><div style="text-align:center">3</div><div style="text-align:center">4</div><div style="text-align:center">5</div></div>`;
+    q.items.forEach(item => {
+      const v = saved[item] !== undefined ? saved[item] : -1;
+      html += `<div class="scale-grid-row"><span class="sgr-label">${item}</span>`;
+      [0,1,2,3,4,5].map((i,idx) => {
+        const label = i===0 ? '×' : String(i);
+        const on = v===i;
+        html += `<button class="sgr-btn ${on?'sel-'+ac:''}" onclick="setScaleItem('${role}','${q.id}','${escQ(item)}',${i})">${label}</button>`;
+      });
+      html += '</div>';
+    });
+    return html + '</div>';
+  }
+
+  return '<div style="color:var(--text-sub);font-size:12px">—</div>';
+}
+
+// ─── Input handlers ───────────────────────────────────
+function onTextInput(el, role, qid) {
+  setAnsVal(role, qid, el.value);
+  el.classList.toggle('saved', el.value.trim().length > 0);
+}
+
+function toggleCheck(role, qid, opt) {
+  let sel = safeParseArr(getAns(role,qid)||'[]');
+  const idx = sel.indexOf(opt);
+  if (idx>=0) sel.splice(idx,1); else sel.push(opt);
+  setAnsVal(role, qid, JSON.stringify(sel));
+  renderContent();
+  renderNav();
+}
+
+function setSingle(role, qid, opt) {
+  setAnsVal(role, qid, opt);
+  renderContent();
+  renderNav();
+}
+
+function setFreqItem(role, qid, item, label) {
+  let saved = safeParseObj(getAns(role,qid)||'{}');
+  saved[item] = label;
+  setAnsVal(role, qid, JSON.stringify(saved));
+  renderContent();
+  renderNav();
+}
+
+function setScaleItem(role, qid, item, val) {
+  let saved = safeParseObj(getAns(role,qid)||'{}');
+  saved[item] = val;
+  setAnsVal(role, qid, JSON.stringify(saved));
+  renderContent();
+  renderNav();
+}
+
+// ─── Compare ─────────────────────────────────────────
+function buildCompare() {
+  const g = getG();
+  const hasE = Object.keys(g.answers_e).length > 0;
+  const hasM = Object.keys(g.answers_m).length > 0;
+
+  if (!hasE && !hasM) {
+    return `<div class="empty-state">
+      <div class="empty-icon">📋</div>
+      <div class="empty-text">尚無訪談資料</div>
+      <div class="empty-sub">請先完成員工或店長訪談，再回來查看比對</div>
+    </div>`;
+  }
+
+  let html = '';
+
+  // Status row
+  html += `<div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+    <span class="topbar-badge ${hasE?'badge-ok':'badge-warn'}">${hasE?'✓ 員工訪談已填':'員工訪談未完成'}</span>
+    <span class="topbar-badge ${hasM?'badge-ok':'badge-warn'}">${hasM?'✓ 店長訪談已填':'店長訪談未完成'}</span>
+  </div>`;
+
+  // Quantitative compare
+  html += `<div class="section-title">量化落差比對</div>`;
+  html += '<div class="compare-grid">';
+  html += `<div class="cmp-row" style="font-size:10px;color:var(--text-sub);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">
+    <div></div>
+    <div style="color:var(--accent-e)">▌ 員工說的</div>
+    <div style="color:var(--accent-m)">▌ 店長說的</div>
+  </div>`;
+
+  MODULES.forEach(mod => {
+    mod.questions.filter(q => q.comparable && q.m_q !== null).forEach(q => {
+      const ae = getAns('e', q.id);
+      const am = getAns('m', q.id);
+      const diff = calcDiff(q, ae, am);
+
+      html += `<div class="cmp-row">
+        <div class="cmp-meta">
+          <div class="cmp-meta-id">${q.id}</div>
+          <div class="cmp-meta-q">${q.label}</div>
+          ${diff ? `<div class="diff-badge diff-${diff.level}">${diff.icon} ${diff.text}</div>` : ''}
+        </div>
+        <div class="cmp-cell e ${diff&&diff.level==='high'?'high':diff&&diff.level==='mid'?'mid':''}">
+          ${fmtAns(q, ae, 'e') || '<span class="cmp-empty">未填寫</span>'}
+        </div>
+        <div class="cmp-cell m ${diff&&diff.level==='high'?'high':diff&&diff.level==='mid'?'mid':''}">
+          ${fmtAns(q, am, 'm') || '<span class="cmp-empty">未填寫</span>'}
+        </div>
+      </div>`;
+    });
+  });
+  html += '</div>';
+
+  // ── M6 綜合回饋獨立區塊（全部三題，不受 comparable 限制）──
+  const m6 = MODULES.find(m => m.id === 'M6');
+  if (m6) {
+    html += `<div class="section-title" style="margin-top:20px">M6 綜合回饋（雙方完整對照）</div>`;
+    html += '<div class="compare-grid">';
+    html += `<div class="cmp-row" style="font-size:10px;color:var(--text-sub);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">
+      <div></div>
+      <div style="color:var(--accent-e)">▌ 員工說的</div>
+      <div style="color:var(--accent-m)">▌ 店長說的</div>
+    </div>`;
+    m6.questions.forEach(q => {
+      const ae = getAns('e', q.id);
+      const am = q.observer ? getAns('m', q.id) : (q.m_q !== null ? getAns('m', q.id) : null);
+      const eLabel = q.observer ? (q.e_label||q.label) : q.label;
+      const mLabel = q.observer ? (q.m_label||q.label) : q.label;
+      // observer 題（M6_f3）：左右各顯示訪談者觀察
+      const eContent = ae ? fmtAns(q, ae, 'e') : '<span class="cmp-empty">未填寫</span>';
+      const mContent = am ? fmtAns(q, am, 'm') : (q.m_q === null && !q.observer ? '<span class="cmp-empty">此題員工專屬</span>' : '<span class="cmp-empty">未填寫</span>');
+      html += `<div class="cmp-row">
+        <div class="cmp-meta">
+          <div class="cmp-meta-id">${q.id}</div>
+          <div class="cmp-meta-q">${q.label}</div>
+        </div>
+        <div class="cmp-cell e">
+          ${q.observer ? '<div style="font-size:10px;color:var(--text-sub);margin-bottom:4px">訪談者補充觀察</div>' : ''}
+          ${eContent}
+        </div>
+        <div class="cmp-cell m">
+          ${q.observer ? '<div style="font-size:10px;color:var(--text-sub);margin-bottom:4px">訪談者補充觀察</div>' : ''}
+          ${mContent}
+        </div>
+      </div>`;
+    });
+    html += '</div>';
+  }
+
+  // ── 輸出工具 ──
+  html += `<div class="output-section-hdr">輸出工具</div>`;
+  html += `<div class="output-cards">`;
+
+  // Card 1: PDF
+  html += `
+  <div class="output-card">
+    <div class="output-card-hdr">
+      <div class="output-card-icon" style="background:#f1f5f9">📄</div>
+      <div>
+        <div class="output-card-label">PDF 報告</div>
+        <div class="output-card-sub">適合主管、老闆或存檔閱讀</div>
+      </div>
+      <span class="output-card-badge" style="background:#f1f5f9;color:var(--text-sub)">給人看</span>
+    </div>
+    <div class="output-card-body">
+      <div class="output-card-desc">
+        包含：基本資料、員工訪談摘要、店長訪談摘要、員工 vs 店長落差比對表、M6 綜合回饋、AI 分析結果（如已填）。下載後用瀏覽器開啟，按 Ctrl+P 選「另存為 PDF」。
+      </div>
+      <div class="output-actions">
+        <button class="btn-pdf-main" onclick="exportPDF()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+          匯出 PDF 報告
+        </button>
+      </div>
+    </div>
+  </div>`;
+
+  // Card 2: AI Text
+  html += `
+  <div class="output-card">
+    <div class="output-card-hdr">
+      <div class="output-card-icon" style="background:var(--accent-c-bg)">🤖</div>
+      <div>
+        <div class="output-card-label">AI 分析資料</div>
+        <div class="output-card-sub">結構化純文字，適合貼入 Claude / ChatGPT</div>
+      </div>
+      <span class="output-card-badge" style="background:var(--accent-c-bg);color:var(--accent-c)">給 AI 讀</span>
+    </div>
+    <div class="output-card-body">
+      <div class="output-card-desc">
+        純文字格式，不含 HTML 或視覺排版。包含完整訪談對照、每題落差判斷，以及分析任務框架。貼入 AI 後可直接取得認知落差分析、留任風險評估與改善建議。
+      </div>
+      <div class="output-actions">
+        <button class="btn-ai-copy" id="btnAICopy" onclick="copyAIText(this)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          複製 AI 分析資料
+        </button>
+        <button class="btn-ai-dl" onclick="downloadAIText()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          下載 .txt
+        </button>
+        <button class="btn-toggle-preview" id="btnAIPreview" onclick="toggleAIPreview()" style="margin-left:auto">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          預覽
+        </button>
+      </div>
+      <div class="prompt-preview-wrap" id="aiPreviewWrap">
+        <div class="prompt-preview" id="aiPreviewText"></div>
+      </div>
+      ${g.analysis ? `
+      <div class="prompt-saved-result" style="margin-top:12px">
+        <div class="prompt-saved-hdr">
+          <span>✓ 已儲存的分析結果</span>
+          <button class="btn btn-ghost btn-sm" onclick="resetAnalysis()">✕ 清除</button>
+        </div>
+        <div class="analysis-text">${g.analysis.replace(/</g,'&lt;')}</div>
+      </div>` : ''}
+    </div>
+  </div>`;
+
+  html += `</div>`; // output-cards
+  return html;
+}
+
+function resetAnalysis() {
+  getG().analysis = null;
+  save();
+  renderContent();
+}
+
+function calcDiff(q, ae, am) {
+  if (!ae || !am) return null;
+  if (q.type==='scale'||q.type==='number') {
+    const d = Math.abs(parseFloat(ae)-parseFloat(am));
+    if (isNaN(d)) return null;
+    if (d>=2) return {level:'high', icon:'⚠', text:`落差 ${d.toFixed(0)} 分`};
+    if (d>=1) return {level:'mid', icon:'△', text:`差距 ${d.toFixed(0)} 分`};
+    return {level:'low', icon:'✓', text:'一致'};
+  }
+  if (q.type==='single_check') {
+    if (ae===am) return {level:'low', icon:'✓', text:'一致'};
+    const risk = ['還在考慮','有在找其他機會'].includes(ae) && ['應該會長期待'].includes(am);
+    return {level: risk?'high':'mid', icon: risk?'⚠':'△', text: risk?'認知落差大':'判斷不同'};
+  }
+  if (q.type==='multi_check'||q.type==='multi_check_other') {
+    // extract sel arrays from both (handles both old array format and new {sel,other} format)
+    const pE=safeParseObj2(ae), pM=safeParseObj2(am);
+    const sE=pE.sel||[], sM=pM.sel||[];
+    const diff=(sE.filter(x=>!sM.includes(x)).length)+(sM.filter(x=>!sE.includes(x)).length);
+    if (diff>=2) return {level:'high', icon:'⚠', text:`差異 ${diff} 項`};
+    if (diff>=1) return {level:'mid', icon:'△', text:'部分差異'};
+    return {level:'low', icon:'✓', text:'一致'};
+  }
+  if (q.type==='scale_multi') {
+    // compare per-station scores between employee difficulty and manager stability
+    try {
+      const oE=safeParseObj(ae), oM=safeParseObj(am);
+      const keys=Object.keys(oE).filter(k=>oE[k]>0&&oM[k]>0);
+      if (!keys.length) return null;
+      // employee difficulty (1=easy,5=hard) vs manager stability (1=unstable,5=stable)
+      // large gap = station where employee struggles but manager hasn't noticed, or vice versa
+      let highGap=0, midGap=0;
+      keys.forEach(k=>{
+        const gap=Math.abs(oE[k]-oM[k]);
+        if(gap>=3) highGap++;
+        else if(gap>=2) midGap++;
+      });
+      if(highGap>=2) return {level:'high', icon:'⚠', text:`${highGap}個站認知差距大`};
+      if(highGap>=1||midGap>=2) return {level:'mid', icon:'△', text:'部分工作站有落差'};
+      if(midGap>=1) return {level:'mid', icon:'△', text:'小幅落差'};
+      return {level:'low', icon:'✓', text:'大致一致'};
+    } catch(e) { return null; }
+  }
+  if (q.type==='freq_check') {
+    const sE=safeParseObj(ae), sM=safeParseObj(am);
+    let blind=0, reverse=0;
+    Object.keys(sE).forEach(k=>{
+      if (sE[k]==='常常有'&&(sM[k]==='從來沒有'||sM[k]==='偶爾有')) blind++;
+      if (sE[k]==='從來沒有'&&sM[k]==='常常有') reverse++;
+    });
+    if (blind>=2) return {level:'high', icon:'⚠', text:`${blind}項員工有感但主管未察覺`};
+    if (blind>=1) return {level:'mid', icon:'△', text:'部分症狀未被看見'};
+    if (reverse>=1) return {level:'mid', icon:'△', text:'主管觀察到員工未察覺的狀況'};
+    return null;
+  }
+  if (q.type==='open') { return null; }
+  return null;
+}
+
+function fmtAns(q, ans, role) {
+  if (!ans) return '';
+  if (q.type==='open') return `<div style="white-space:pre-wrap;font-size:12px">${(ans||'').replace(/</g,'&lt;')}</div>`;
+  if (q.type==='scale') return `<span style="font-size:22px;font-weight:700;font-family:var(--mono);color:var(--text)">${ans}</span><span style="font-size:11px;color:var(--text-sub)"> / 5</span>`;
+  if (q.type==='number') return `<span style="font-size:22px;font-weight:700;font-family:var(--mono);color:var(--text)">${ans}</span><span style="font-size:11px;color:var(--text-sub)"> 歲</span>`;
+  if (q.type==='single_check') return `<span style="font-weight:600">${ans}</span>`;
+  if (q.type==='multi_check' || q.type==='multi_check_other') {
+    const parsed = safeParseObj2(ans);
+    const sel = parsed.sel || [];
+    const other = parsed.other ? `<div style="font-size:11px;color:var(--text-sub);margin-top:3px">其他：${parsed.other}</div>` : '';
+    return sel.map(a=>`<span style="display:inline-block;background:var(--bg);border:1px solid var(--border);padding:2px 7px;border-radius:4px;font-size:11px;margin:2px">${a}</span>`).join('') + other;
+  }
+  if (q.type==='freq_check') {
+    const obj=safeParseObj(ans);
+    const h=Object.entries(obj).filter(([k,v])=>v==='常常有').map(([k])=>k);
+    const o=Object.entries(obj).filter(([k,v])=>v==='偶爾有').map(([k])=>k);
+    let s='';
+    if (h.length) s+=`<div style="color:var(--warn);font-size:11px;margin-bottom:2px">常常有：${h.join('、')}</div>`;
+    if (o.length) s+=`<div style="color:var(--accent-m);font-size:11px">偶爾有：${o.join('、')}</div>`;
+    return s||'<span style="color:var(--text-sub);font-size:12px">全部從來沒有</span>';
+  }
+  if (q.type==='scale_multi') {
+    const obj=safeParseObj(ans);
+    const entries=Object.entries(obj).filter(([k,v])=>v>0);
+    if (!entries.length) return '<span style="color:var(--text-sub);font-size:12px">（未評分）</span>';
+    return entries.map(([k,v])=>{
+      const col=v>=4?'var(--warn)':v<=2?'var(--ok)':'var(--text-sub)';
+      return `<span style="display:inline-block;padding:1px 5px;border-radius:3px;font-size:11px;margin:1px;color:${col}">${k}(${v})</span>`;
+    }).join('');
+  }
+  return ans;
+}
+
+// ─── AI Prompt Generator ─────────────────────────────
+function buildAnalysisPrompt() {
+  const g = getG();
+  const lines = [];
+
+  MODULES.forEach(mod => {
+    const modLines = [];
+    mod.questions.forEach(q => {
+      const ae = getAns('e', q.id);
+      const am = getAns('m', q.id);
+      if (!ae && !am) return;
+      modLines.push(`  [${q.id}] ${q.label}`);
+      if (ae) modLines.push(`    員工：${rawAns(q, ae)}`);
+      if (am && (q.m_q || q.observer)) modLines.push(`    店長：${rawAns(q, am)}`);
+    });
+    if (modLines.length) {
+      lines.push(`\n【${mod.id} ${mod.title}】`);
+      lines.push(...modLines);
+    }
+  });
+
+  return `你是中高齡職場訪談的資深顧問，擅長識別員工與主管之間的認知落差。
+
+以下是同一組「員工 ＆ 店長」的完整訪談紀錄（中高齡職務再設計專案）：
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${lines.join('\n')}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+請依照以下格式，用繁體中文輸出完整分析報告：
+
+【一、最重要的 3 個認知落差】
+針對員工與店長回答差異最大的題目，逐條分析：
+・落差描述：員工說的 vs 店長說的
+・管理意涵：這個落差代表什麼問題或風險
+
+【二、留任風險評估】
+風險等級：低 / 中 / 高
+評估依據：2–3 句具體說明
+
+【三、立即可用的追問話術】
+針對落差最大的 1–2 個議題，提供下次訪談可以直接使用的問句（可分別給員工版與店長版）
+
+【四、職務調整建議】
+根據訪談內容，提出 1–3 條具體可執行的工作條件優化建議
+
+（總字數請控制在 500 字以內，重點明確，避免空泛描述）`;
+}
+
+function copyPrompt() {
+  const prompt = buildAnalysisPrompt();
+  const btn = document.getElementById('btnCopyPrompt');
+
+  // populate preview if open
+  const previewEl = document.getElementById('promptPreviewText');
+  if (previewEl) previewEl.textContent = prompt;
+
+  navigator.clipboard.writeText(prompt).then(() => {
+    if (btn) {
+      btn.classList.add('copied');
+      btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 已複製！`;
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> 複製 Prompt`;
+      }, 2000);
+    }
+  }).catch(() => {
+    // fallback for older browsers
+    const ta = document.createElement('textarea');
+    ta.value = prompt;
+    ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    if (btn) {
+      btn.classList.add('copied');
+      btn.textContent = '已複製！';
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> 複製 Prompt`;
+      }, 2000);
+    }
+  });
+}
+
+function togglePromptPreview() {
+  const wrap = document.getElementById('promptPreviewWrap');
+  const btn  = document.getElementById('btnTogglePreview');
+  const previewEl = document.getElementById('promptPreviewText');
+  if (!wrap) return;
+
+  const isOpen = wrap.classList.toggle('open');
+  if (isOpen && previewEl && !previewEl.textContent) {
+    previewEl.textContent = buildAnalysisPrompt();
+  }
+  if (btn) {
+    btn.innerHTML = isOpen
+      ? `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg> 收起 Prompt`
+      : `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> 預覽 Prompt`;
+  }
+}
+
+function rawAns(q, ans) {
+  if (!ans) return '未填';
+  if (['multi_check','multi_check_other','freq_check','scale_multi'].includes(q.type)) {
+    try { return JSON.stringify(JSON.parse(ans)); } catch(e) {}
+  }
+  return ans;
+}
+
+// ─── Plain-text converter (for AI output) ────────────
+function toPlainAns(q, ans) {
+  if (!ans && ans !== 0) return '未填寫';
+  if (q.type === 'open') return (ans||'').trim() || '未填寫';
+  if (q.type === 'scale') return ans + ' / 5';
+  if (q.type === 'number') return ans + ' 歲';
+  if (q.type === 'single_check') return ans || '未填寫';
+  if (q.type === 'multi_check' || q.type === 'multi_check_other') {
+    try {
+      const p = safeParseObj2(ans);
+      const parts = [...(p.sel||[])];
+      if (p.other) parts.push('其他：' + p.other);
+      return parts.length ? parts.join('、') : '未填寫';
+    } catch(e) { return ans; }
+  }
+  if (q.type === 'freq_check') {
+    try {
+      const obj = safeParseObj(ans);
+      const cc = Object.entries(obj).filter(([k,v])=>v==='常常有').map(([k])=>k);
+      const oy = Object.entries(obj).filter(([k,v])=>v==='偶爾有').map(([k])=>k);
+      const parts = [];
+      if (cc.length) parts.push('常常有：' + cc.join('、'));
+      if (oy.length) parts.push('偶爾有：' + oy.join('、'));
+      return parts.length ? parts.join('；') : '全部從來沒有';
+    } catch(e) { return ans; }
+  }
+  if (q.type === 'scale_multi') {
+    try {
+      const obj = safeParseObj(ans);
+      const result = Object.entries(obj)
+        .filter(([k,v]) => v !== undefined && v !== null && v !== '')
+        .map(([k,v]) => k + '：' + (v === 0 ? '未填寫' : String(v)));
+      return result.length ? result.join('、') : '未填寫';
+    } catch(e) { return '未填寫'; }
+  }
+  return ans || '未填寫';
+}
+
+function diffToPlain(diff, q) {
+  if (!diff) {
+    if (q && q.type === 'open') return '未判斷：開放題不進行自動判斷';
+    return '未判斷：資料不足';
+  }
+  if (diff.level === 'high') return `高落差：${diff.text}`;
+  if (diff.level === 'mid')  return `中落差：${diff.text}`;
+  if (diff.level === 'low')  return '一致：雙方回答一致';
+  return `未判斷：${diff.text}`;
+}
+
+// ─── Build AI text ────────────────────────────────────
+function buildAIText() {
+  const g = getG();
+  const lines = [];
+
+  // ── 專案
+  lines.push('【專案】');
+  lines.push('中高齡員工職務再設計訪談分析');
+  lines.push('');
+
+  // ── 基本資料
+  lines.push('【基本資料】');
+  lines.push('訪談日期：');
+  lines.push('門市：');
+  lines.push('受訪者名稱：');
+  lines.push('職務：');
+  lines.push('年齡區間：');
+  lines.push('年資：');
+  lines.push('訪談者：');
+  lines.push('');
+
+  // ── 分析任務（含 AI 角色設定）
+  lines.push('【分析任務】');
+  lines.push('你是一位餐飲業組織發展顧問，專長於中高齡員工職務再設計、門市營運管理與主管管理能力診斷。');
+  lines.push('請比較同一位員工與店長的訪談內容，找出認知落差、潛在風險、問題本質與改善建議。');
+  lines.push('');
+
+  // ── 訪談資料對照
+  lines.push('【訪談資料對照】');
+
+  MODULES.forEach(mod => {
+    lines.push('');
+    lines.push(`【${mod.id} ${mod.title}】`);
+
+    mod.questions.forEach(q => {
+      const ae = getAns('e', q.id);
+      const am = (q.m_q !== null || q.observer) ? getAns('m', q.id) : null;
+      if (!ae && !am) return;
+
+      lines.push(`題目：${q.label}`);
+
+      // scale_multi：逐站並列對照
+      if (q.type === 'scale_multi') {
+        lines.push('回答對照：');
+        try {
+          const objE = ae ? safeParseObj(ae) : {};
+          const objM = am ? safeParseObj(am) : {};
+          const keys = [...new Set([...Object.keys(objE), ...Object.keys(objM)])];
+          keys.forEach(k => {
+            const ve = objE[k] !== undefined ? (objE[k] === 0 ? '未填寫' : String(objE[k])) : '未填寫';
+            const vm = (am && objM[k] !== undefined) ? (objM[k] === 0 ? '未填寫' : String(objM[k])) : '未填寫';
+            if (q.m_q !== null || q.observer) {
+              lines.push(`  ${k}：員工${ve} / 店長${vm}`);
+            } else {
+              lines.push(`  ${k}：員工${ve}`);
+            }
+          });
+        } catch(e) {
+          lines.push(`  員工：${ae || '未填寫'}`);
+          if (am) lines.push(`  店長：${am}`);
+        }
+      } else {
+        // 其他題型：分行輸出
+        lines.push(`員工回答：${toPlainAns(q, ae)}`);
+        if (q.m_q !== null || q.observer) {
+          lines.push(`店長回答：${toPlainAns(q, am)}`);
+        }
+      }
+
+      // 落差判斷
+      const diff = (ae && am) ? calcDiff(q, ae, am) : null;
+      lines.push(`初步落差判斷：${diffToPlain(diff, q)}`);
+      lines.push('');
+    });
+  });
+
+  // ── 分析框架
+  lines.push('【請 AI 依照以下架構分析】');
+  lines.push('');
+  lines.push('1. 關鍵認知落差（最多3點）');
+  lines.push('   - 員工觀點');
+  lines.push('   - 店長觀點');
+  lines.push('   - 落差代表的管理問題');
+  lines.push('');
+  lines.push('2. 留任或適應風險判斷');
+  lines.push('   - 風險等級：低／中／高');
+  lines.push('   - 判斷依據');
+  lines.push('');
+  lines.push('3. 問題本質判斷');
+  lines.push('   請判斷主要屬於：');
+  lines.push('   - 個人能力');
+  lines.push('   - 訓練不足');
+  lines.push('   - 管理溝通');
+  lines.push('   - 工作設計');
+  lines.push('   - 制度問題');
+  lines.push('   並說明理由。');
+  lines.push('');
+  lines.push('4. 可立即改善建議');
+  lines.push('   - 一週內可做');
+  lines.push('   - 一個月內可做');
+  lines.push('');
+  lines.push('5. 下一次訪談應追問的問題');
+  lines.push('   請提供 2～3 題可直接使用的追問句。');
+
+  // ── 已儲存分析結果（如有）
+  if (g.analysis) {
+    lines.push('');
+    lines.push('【已儲存的分析結果】');
+    lines.push(g.analysis);
+  }
+
+  return lines.join('\n');
+}
+
+// ─── Copy / download AI text ──────────────────────────
+function copyAIText(btnEl) {
+  const text = buildAIText();
+  const btn = btnEl || document.getElementById('btnAICopy');
+  const previewEl = document.getElementById('aiPreviewText');
+  if (previewEl) previewEl.textContent = text;
+
+  const finish = (ok) => {
+    if (!btn) return;
+    const orig = btn.innerHTML;
+    btn.classList.add('copied');
+    btn.innerHTML = ok
+      ? `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 已複製！`
+      : `⚠ 請手動複製預覽區`;
+    setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = orig; }, 2200);
+  };
+
+  navigator.clipboard.writeText(text).then(() => finish(true)).catch(() => {
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px';
+      document.body.appendChild(ta); ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      finish(true);
+    } catch(e) {
+      // open preview so user can copy manually
+      const wrap = document.getElementById('aiPreviewWrap');
+      if (wrap) wrap.classList.add('open');
+      finish(false);
+    }
+  });
+}
+
+function downloadAIText() {
+  const text = buildAIText();
+  const g = getG();
+  const ts = new Date().toISOString().slice(0,10);
+  const blob = new Blob([text], {type:'text/plain;charset=utf-8'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url;
+  a.download = `${g.label}_AI分析資料_${ts}.txt`;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 3000);
+}
+
+function toggleAIPreview() {
+  const wrap = document.getElementById('aiPreviewWrap');
+  const btn  = document.getElementById('btnAIPreview');
+  const el   = document.getElementById('aiPreviewText');
+  if (!wrap) return;
+  const isOpen = wrap.classList.toggle('open');
+  if (isOpen && el && !el.textContent) el.textContent = buildAIText();
+  if (btn) btn.innerHTML = isOpen
+    ? `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg> 收起`
+    : `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> 預覽`;
+}
+
+
+
+function safeParseObj2(s) {
+  try {
+    const v = JSON.parse(s);
+    if (Array.isArray(v)) return {sel:v, other:''};
+    if (v && typeof v === 'object' && 'sel' in v) return v;
+    return {sel:[], other:''};
+  } catch(e) { return {sel:[], other:''}; }
+}
+
+function toggleCheckObj(role, qid, opt) {
+  const parsed = safeParseObj2(getAns(role,qid)||'{}');
+  const idx = parsed.sel.indexOf(opt);
+  if (idx>=0) { parsed.sel.splice(idx,1); if(opt==='其他') parsed.other=''; }
+  else parsed.sel.push(opt);
+  setAnsVal(role, qid, JSON.stringify(parsed));
+  renderContent();
+  renderNav();
+}
+
+function setOtherText(role, qid, val) {
+  const parsed = safeParseObj2(getAns(role,qid)||'{}');
+  parsed.other = val;
+  setAnsVal(role, qid, JSON.stringify(parsed));
+}
+
+// ─── Utils ───────────────────────────────────────────
+function safeParseArr(s) { try { return JSON.parse(s); } catch(e) { return []; } }
+function safeParseObj(s) { try { return JSON.parse(s); } catch(e) { return {}; } }
+function escQ(s) { return s.replace(/'/g,"\\'"); }
+function chkSvg() { return '<svg width="10" height="10" viewBox="0 0 10 10"><path d="M1.5 5L4 7.5 8.5 2.5" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/></svg>'; }
+
+
+// ─── PDF 匯出 ─────────────────────────────────────────
+function exportPDF() {
+  const g = getG();
+
+  // 建立 print 視窗內容
+  let html = `<!DOCTYPE html><html lang="zh-TW"><head>
+  <meta charset="UTF-8">
+  <title>${g.label} 訪談紀錄</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Microsoft JhengHei','Noto Sans TC',sans-serif;font-size:12px;color:#1e293b;line-height:1.6;padding:20px}
+    h1{font-size:16px;font-weight:700;border-bottom:2px solid #1e293b;padding-bottom:6px;margin-bottom:14px}
+    h2{font-size:13px;font-weight:700;background:#f1f5f9;padding:6px 10px;margin:16px 0 8px;border-left:3px solid #2563eb}
+    h2.m{border-left-color:#d97706}
+    .q-block{margin-bottom:10px;padding:8px 10px;border:1px solid #e2e8f0;border-radius:4px}
+    .q-id{font-size:10px;font-weight:700;color:#2563eb;margin-bottom:2px}
+    .q-id.m{color:#d97706}
+    .q-label{font-size:11px;font-weight:600;color:#334155;margin-bottom:4px}
+    .q-ans{font-size:12px;color:#1e293b;white-space:pre-wrap;padding:4px 0}
+    .q-ans.empty{color:#94a3b8;font-style:italic}
+    .compare-table{width:100%;border-collapse:collapse;margin:8px 0;font-size:11px}
+    .compare-table th{background:#f1f5f9;padding:5px 8px;text-align:left;border:1px solid #e2e8f0;font-weight:600}
+    .compare-table td{padding:5px 8px;border:1px solid #e2e8f0;vertical-align:top}
+    .compare-table tr:nth-child(even) td{background:#f8fafc}
+    .diff-high{background:#fef2f2!important;color:#dc2626;font-weight:600}
+    .diff-mid{background:#fffbeb!important;color:#d97706;font-weight:600}
+    .diff-ok{color:#059669}
+    .section-break{margin:20px 0;border-top:1px dashed #cbd5e1}
+    .meta{font-size:11px;color:#64748b;margin-bottom:12px}
+    @media print{
+      body{padding:10px}
+      h1{break-before:page}
+      h1:first-child{break-before:avoid}
+      h2{break-after:avoid}
+      .q-block{break-inside:avoid;margin-bottom:6px}
+      .compare-table{break-inside:auto}
+      .compare-table tr{break-inside:avoid}
+      .section-break{break-before:page;margin:0}
+    }
+  </style></head><body>`;
+
+  const now = new Date().toLocaleDateString('zh-TW');
+
+  // ── 員工訪談 ──
+  html += `<h1>中高齡職務再設計 · ${g.label} · 員工訪談紀錄</h1>`;
+  html += `<div class="meta">匯出日期：${now}</div>`;
+
+  MODULES.forEach(mod => {
+    const qs = mod.questions;
+    html += `<h2>${mod.id} ${mod.title}</h2>`;
+    qs.forEach(q => {
+      const ae = g.answers_e[q.id];
+      html += `<div class="q-block">
+        <div class="q-id">${q.id}</div>
+        <div class="q-label">${q.e_q}</div>
+        <div class="q-ans ${ae?'':'empty'}">${ae ? formatForPDF(q, ae) : '（未填寫）'}</div>
+      </div>`;
+    });
+  });
+
+  html += `<div class="section-break"></div>`;
+
+  // ── 店長訪談 ──
+  html += `<h1 style="margin-top:8px">中高齡職務再設計 · ${g.label} · 店長訪談紀錄</h1>`;
+  html += `<div class="meta">匯出日期：${now}</div>`;
+
+  MODULES.forEach(mod => {
+    const qs = mod.questions.filter(q => q.m_q !== null || q.observer);
+    if (!qs.length) return;
+    html += `<h2 class="m">${mod.id} ${mod.title}</h2>`;
+    qs.forEach(q => {
+      const am = g.answers_m[q.id];
+      const qLabel = q.observer ? (q.m_label||q.label) : (q.m_q||q.label);
+      html += `<div class="q-block">
+        <div class="q-id m">${q.id}</div>
+        <div class="q-label">${qLabel}</div>
+        <div class="q-ans ${am?'':'empty'}">${am ? formatForPDF(q, am) : '（未填寫）'}</div>
+      </div>`;
+    });
+  });
+
+  html += `<div class="section-break"></div>`;
+
+  // ── 落差比對表 ──
+  html += `<h1 style="margin-top:8px">中高齡職務再設計 · ${g.label} · 認知落差比對</h1>`;
+  html += `<div class="meta">匯出日期：${now}</div>`;
+  html += `<table class="compare-table"><thead><tr>
+    <th style="width:60px">題號</th>
+    <th style="width:100px">比對項目</th>
+    <th style="width:35%">員工說的</th>
+    <th style="width:35%">店長說的</th>
+    <th style="width:70px">落差</th>
+  </tr></thead><tbody>`;
+
+  MODULES.forEach(mod => {
+    mod.questions.filter(q => q.comparable && q.m_q !== null).forEach(q => {
+      const ae = g.answers_e[q.id];
+      const am = g.answers_m[q.id];
+      const diff = calcDiff(q, ae, am);
+      const diffCls = diff ? (diff.level==='high'?'diff-high':diff.level==='mid'?'diff-mid':'diff-ok') : '';
+      html += `<tr>
+        <td style="font-weight:600;font-size:10px">${q.id}</td>
+        <td style="font-size:11px">${q.label}</td>
+        <td>${ae ? formatForPDF(q, ae) : '<span style="color:#94a3b8">未填</span>'}</td>
+        <td>${am ? formatForPDF(q, am) : '<span style="color:#94a3b8">未填</span>'}</td>
+        <td class="${diffCls}" style="font-size:11px;text-align:center">${diff ? diff.icon+' '+diff.text : '—'}</td>
+      </tr>`;
+    });
+  });
+
+  html += `</tbody></table>`;
+
+  // ── M6 綜合回饋（PDF 版）──
+  const m6mod = MODULES.find(m => m.id === 'M6');
+  if (m6mod) {
+    html += `<div style="margin-top:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#64748b;padding:4px 0 8px;border-bottom:1px solid #e2e8f0;margin-bottom:12px">M6 綜合回饋</div>`;
+    html += `<table class="compare-table"><thead><tr>
+      <th style="width:60px">題號</th>
+      <th style="width:35%">員工說的</th>
+      <th style="width:35%">店長說的</th>
+    </tr></thead><tbody>`;
+    m6mod.questions.forEach(q => {
+      const ae = g.answers_e[q.id];
+      const am = g.answers_m[q.id];
+      const qLabel = q.observer ? (q.label) : q.label;
+      const eLabel = q.observer ? (q.e_label||q.label) : (q.e_q||q.label);
+      const mLabel = q.observer ? (q.m_label||q.label) : (q.m_q||q.label);
+      html += `<tr>
+        <td style="font-weight:600;font-size:10px;vertical-align:top">${q.id}<br><span style="font-weight:400;color:#64748b">${qLabel}</span></td>
+        <td style="vertical-align:top">
+          <div style="font-size:10px;color:#94a3b8;margin-bottom:3px">${eLabel}</div>
+          ${ae ? formatForPDF(q, ae) : '<span style="color:#94a3b8">未填寫</span>'}
+        </td>
+        <td style="vertical-align:top">
+          ${q.m_q === null && !q.observer
+            ? '<span style="color:#94a3b8;font-size:11px">此題員工專屬</span>'
+            : `<div style="font-size:10px;color:#94a3b8;margin-bottom:3px">${mLabel}</div>${am ? formatForPDF(q, am) : '<span style="color:#94a3b8">未填寫</span>'}`
+          }
+        </td>
+      </tr>`;
+    });
+    html += `</tbody></table>`;
+  }
+
+  // ── AI 分析結果（如有）──
+  if (g.analysis) {
+    html += `<div class="section-break"></div>`;
+    html += `<h1 style="margin-top:8px">AI 落差分析結果</h1>`;
+    html += `<div style="font-size:12px;line-height:1.9;white-space:pre-wrap;padding:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:4px">${g.analysis}</div>`;
+  }
+
+  html += `</body></html>`;
+
+  // 產生 Blob 下載，避免彈出視窗被封鎖
+  html += '</body></html>';
+  const blob = new Blob([html], {type: 'text/html;charset=utf-8'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  const g2   = getG();
+  a.href     = url;
+  a.download = `${g2.label}_訪談紀錄_${new Date().toLocaleDateString('zh-TW').replace(/\//g,'-')}.html`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 3000);
+
+  // 提示使用者
+  const tip = document.createElement('div');
+  tip.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,.3)';
+  tip.textContent = '✓ 已下載 HTML 檔案，用瀏覽器開啟後按 Ctrl+P（Mac: ⌘P）選「另存為 PDF」';
+  document.body.appendChild(tip);
+  setTimeout(() => tip.remove(), 5000);
+}
+
+function formatForPDF(q, ans) {
+  if (!ans) return '';
+  if (q.type === 'open') return (ans||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  if (q.type === 'scale' || q.type === 'number') return `<strong>${ans}</strong>${q.type==='number'?' 歲':' / 5'}`;
+  if (q.type === 'single_check') return `<strong>${ans}</strong>`;
+  if (q.type === 'multi_check' || q.type === 'multi_check_other') {
+    try {
+      const parsed = safeParseObj2(ans);
+      const sel = parsed.sel || [];
+      const other = parsed.other ? `（其他：${parsed.other}）` : '';
+      return sel.join('、') + other;
+    } catch(e) { return ans; }
+  }
+  if (q.type === 'freq_check') {
+    const obj = safeParseObj(ans);
+    const h = Object.entries(obj).filter(([k,v])=>v==='常常有').map(([k])=>k);
+    const o = Object.entries(obj).filter(([k,v])=>v==='偶爾有').map(([k])=>k);
+    let s = '';
+    if (h.length) s += `<span style="color:#dc2626">常常有：${h.join('、')}</span><br>`;
+    if (o.length) s += `<span style="color:#d97706">偶爾有：${o.join('、')}</span>`;
+    return s || '全部從來沒有';
+  }
+  if (q.type === 'scale_multi') {
+    const obj = safeParseObj(ans);
+    return Object.entries(obj).filter(([k,v])=>v>0).map(([k,v])=>`${k}(${v}分)`).join('、') || '已填寫';
+  }
+  return ans;
+}
+
+// ─── Init ─────────────────────────────────────────────
+loadState();
+renderNav();
+renderTopbar();
+renderContent();
+
+// ─── About modal ──────────────────────────────────────
+function openAbout() {
+  document.getElementById('aboutModal').classList.add('open');
+}
+function closeAbout() {
+  document.getElementById('aboutModal').classList.remove('open');
+}
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeAbout(); });
+
+// ─── Demo data ────────────────────────────────────────
+function loadDemoData() {
+  if (!confirm('載入 Demo 資料將覆蓋目前組別「' + getG().label + '」的所有內容。\n確定繼續？')) return;
+
+  const stationsE = JSON.stringify({
+    '炸台':0,'煮台':3,'烤台':0,'麵台':2,'後備':1,'品管':2,'洗滌':1,
+    '帶位接待':4,'點餐收銀':3,'送餐跑單':5,'桌邊服務':3,'外帶窗口':2,'清潔維護':1
+  });
+  const stationsM = JSON.stringify({
+    '炸台':0,'煮台':3,'烤台':0,'麵台':3,'後備':2,'品管':4,'洗滌':2,
+    '帶位接待':5,'點餐收銀':3,'送餐跑單':2,'桌邊服務':4,'外帶窗口':3,'清潔維護':2
+  });
+  const freqE = JSON.stringify({
+    '工作到後半段動作會比剛開始慢':'常常有',
+    '下班後需要很長時間才覺得恢復':'偶爾有',
+    '尖峰時段腦袋有點轉不過來':'偶爾有',
+    '有時沒聽清楚指令但沒再問':'偶爾有',
+    '有時看錯單或記錯步驟':'從來沒有',
+    '某些動作做久了身體會不舒服':'常常有'
+  });
+  const freqM = JSON.stringify({
+    '工作到後半段動作會比剛開始慢':'偶爾有',
+    '下班後需要很長時間才覺得恢復':'從來沒有',
+    '尖峰時段腦袋有點轉不過來':'從來沒有',
+    '有時沒聽清楚指令但沒再問':'常常有',
+    '有時看錯單或記錯步驟':'偶爾有',
+    '某些動作做久了身體會不舒服':'偶爾有'
+  });
+  const typeE = JSON.stringify({sel:['體力負荷（久站、搬運、高溫）','速度節奏（尖峰時跟不上）'],other:''});
+  const typeM = JSON.stringify({sel:['速度節奏（尖峰時跟不上）','設備操作（機器、POS不熟）'],other:''});
+
+  const g = getG();
+  g.answers_e = {
+    M1_stations: stationsE,
+    M1_type:     typeE,
+    M1_open:     '尖峰時段送餐跑單壓力最大，常常腳步跟不上，感覺拖累大家。',
+    M2_s1:       '4',
+    M2_s2:       '3',
+    M2_q1:       '備料和桌邊服務熟多了，現在不用一直問人。',
+    M2_q2:       'POS系統還沒很順，有時候結帳要想一下。',
+    M2_q3:       '希望一開始可以分站慢慢來，不要第一週就馬上跑尖峰。',
+    M3_freq:     freqE,
+    M3_time:     '尖峰後明顯疲乏',
+    M3_open:     '通常會找個地方靠一下，或是去補一下水，不敢跟主管說，怕被覺得體力不好。',
+    M4_p1:       '3',
+    M4_p2:       '4',
+    M4_p3:       '3',
+    M4_open:     '有時候感覺年輕同事的工作站比較輕鬆，但不確定是不是我想太多。',
+    M5_g1:       '找適當時機說',
+    M5_g2:       '怕說出來傷感情，也擔心店長覺得我在抱怨。有一次跑單太累想說換個崗位，最後沒開口。',
+    M5_g3:       '朋友也在餐飲做，他說最難的是跟年輕主管對頻，說話方式不太一樣。',
+    M5_g4:       '3',
+    M6_f1:       '希望排班可以不要連續排兩天午晚尖峰，腳真的撐不住。',
+    M6_f2:       '如果可以，希望有一個固定的崗位，不要每天都不知道自己要去哪裡。',
+    M6_f3:       '受訪者說話過程中偶爾停頓，對「送餐跑單」話題明顯情緒較緊繃，但整體配合度高。'
+  };
+  g.answers_m = {
+    M1_stations: stationsM,
+    M1_type:     typeM,
+    M1_open:     '他送餐的速度確實比較慢，尖峰時我會讓年輕同事先頂，他負責帶位和補桌。',
+    M2_s1:       '3',
+    M2_s2:       '4',
+    M2_q1:       '態度很穩，顧客評價很好，桌邊服務比很多年輕員工細心。',
+    M2_q2:       'POS操作還需要加強，有時候需要旁邊的人協助。',
+    M2_q3:       '下次帶類似的新人，我會讓他在非尖峰先熟一週，不要急著排正班。',
+    M3_freq:     freqM,
+    M3_time:     '尖峰後表現下滑',
+    M3_open:     '有提過，他說還好，但我觀察他尖峰後腳步明顯慢了。沒有繼續追問。',
+    M4_p1:       '4',
+    M4_p2:       '5',
+    M4_p3:       '4',
+    M4_open:     '上週他桌邊服務被客人稱讚，我有當場告訴他，他看起來很開心。',
+    M5_g1:       '找私下時機說',
+    M5_g2:       '大概兩週前，建議他POS操作可以先把步驟抄下來，他當場點頭說好。',
+    M5_g3:       '帶比較年長的員工，要更注意說話的方式，不能用對年輕人那種直接的方式。',
+    M5_g4:       '4',
+    M6_f1:       '希望公司可以提供一個「調崗申請」的管道，讓員工自己說，我比較難主動開口問。',
+    M6_f2:       '如果有一套針對中高齡的帶人SOP，我就不用每次靠經驗猜。',
+    M6_f3:       '店長整體態度積極，對這位員工顯然有認真觀察，訪談過程主動舉例，配合度高。'
+  };
+  g.analysis = null;
+  save();
+  renderNav();
+  renderTopbar();
+  renderContent();
+  setTimeout(() => switchTab('c'), 200);
+}
+</script>
+</body>
+</html>
